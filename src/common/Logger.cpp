@@ -12,8 +12,7 @@ Logger::Logger() {
 
 Logger::~Logger() = default;
 
-void Logger::info(const std::string& log) {
-
+bool Logger::write_log_to_file(const std::string &log) {
     std::wfstream logFile;
 
     const auto log_dir = LogDirectory();
@@ -24,12 +23,24 @@ void Logger::info(const std::string& log) {
 
     if (!logFile.is_open()) {
         MessageBox(nullptr, "Unable to open log file...", "Log Error", MB_OK);
-        return;
+        return true;
     }
 
-    logFile << L"[" << Time::GetDateTimeString() << L"]  " << log.c_str() << std::endl;
+    logFile << log.c_str() << std::endl;
     logFile.close();
+    return false;
+}
 
+void Logger::info(const std::string& log) {
+    std::stringstream ss;
+    ss << "[" << Time::GetDateTimeString() << "]  " << log;
+    Logger::write_log_to_file(ss.str());
+}
+
+void Logger::separator() {
+    Logger::write_log_to_file("");
+    Logger::write_log_to_file("----------------------------------------------------------------------------------------------------");
+    Logger::write_log_to_file("");
 }
 
 std::wstring Logger::LogDirectory()

@@ -8,7 +8,10 @@ PerGameSettings::PerGameSettings() {
 
     inst->m_GameName = L"undefined";
     inst->m_ShortName = L"undefined";
-    inst->m_BootTime = Time::GetDateTimeString(TRUE);
+
+    std::wstringstream ss;
+    ss << Time::GetDateTimeString(TRUE).c_str();
+    inst->m_BootTime = ss.str();
 }
 
 PerGameSettings::~PerGameSettings() = default;

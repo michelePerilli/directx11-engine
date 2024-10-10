@@ -1,7 +1,9 @@
 #include "Time.h"
 
+#include <codecvt>
+
 /* Get Time in format '00:00:00' */
-std::wstring Time::GetTime(const BOOL striped) {
+std::string Time::GetTime(const BOOL striped) {
     const time_t now = time(nullptr);
     tm ltm{};
     localtime_s(&ltm, &now);
@@ -15,12 +17,13 @@ std::wstring Time::GetTime(const BOOL striped) {
             return c == L':';
         });
     }
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
 
-    return timeString;
+    return converter.to_bytes(timeString);
 }
 
 /* Get date in format '00/00/00' */
-std::wstring Time::GetDate(const BOOL striped) {
+std::string Time::GetDate(const BOOL striped) {
     const time_t now = time(nullptr);
     tm ltm{};
     localtime_s(&ltm, &now);
@@ -34,11 +37,13 @@ std::wstring Time::GetDate(const BOOL striped) {
         });
     }
 
-    return timeString;
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+
+    return converter.to_bytes(timeString);
 }
 
 /* Get date time in format '00/00/00 00:00:00' */
-std::wstring Time::GetDateTimeString(const BOOL striped) {
-    std::wstring timeString = GetDate(striped) + GetTime(striped);
+std::string Time::GetDateTimeString(const BOOL striped) {
+    std::string timeString = GetDate(striped) + GetTime(striped);
     return timeString;
 }
