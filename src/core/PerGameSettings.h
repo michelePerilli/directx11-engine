@@ -1,6 +1,7 @@
 #pragma once
 #include <libloaderapi.h>
-#include <winnt.h>
+#include <string>
+#include <windows.h>
 
 class __declspec(dllexport) PerGameSettings {
 
@@ -19,6 +20,7 @@ private:
     std::wstring m_ShortName;
     // HICON m_MainIcon{};
     std::wstring m_BootTime;
+    std::wstring m_SplashURL;
 
 public:
 
@@ -41,4 +43,7 @@ public:
     }
 
     static std::wstring BootTime() { return inst->m_BootTime; }
+
+    static std::wstring SplashURL() { return inst->m_SplashURL; }
+    // static VOID SetSplashURL(UINT id) { LoadString(HInstance(), id, inst->m_SplashURL, MAX_NAME_STRING); }
 };

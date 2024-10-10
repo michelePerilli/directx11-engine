@@ -1,15 +1,22 @@
 #pragma once
 
-#define ENTRYAPP(x) IApplication* EntryApplication() { return new x; }
+#define ENTRYAPP(x) Win32::IApplication* EntryApplication() { return new x; }
 
-class __declspec(dllexport) IApplication {
-public:
-    IApplication();
-    virtual ~IApplication() = default;
+namespace Win32 {
+    class __declspec(dllexport) IApplication {
+    public:
+        IApplication();
 
-    virtual VOID SetupPerGameSettings() = 0;
-    virtual VOID Initialize() = 0;
-    virtual VOID Update() = 0;
-};
+        virtual ~IApplication() = default;
 
-IApplication* EntryApplication();
+        virtual VOID SetupPerGameSettings() = 0;
+
+        virtual VOID PreInitialize() = 0;
+
+        virtual VOID Initialize() = 0;
+
+        virtual VOID Update() = 0;
+    };
+
+    IApplication* EntryApplication();
+}

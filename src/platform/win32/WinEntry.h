@@ -1,8 +1,8 @@
 #pragma once
-#include "../../Engine.h"
+#include "IApplication.h"
 #include "../../common/Logger.h"
 
-extern IApplication* EntryApplication();
+extern Win32::IApplication* EntryApplication();
 
 
 int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -13,19 +13,20 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
     Logger logger;
 
+    EntryPointApplication->PreInitialize();
+
     EntryPointApplication->Initialize();
 
 
-    MSG msg = { 0 };
+    MSG msg = { nullptr };
     while (msg.message != WM_QUIT)
     {
         // If there are Window messages then process them.
-        if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
-        }
-        else {
+        } else {
             EntryPointApplication->Update();
         }
     }

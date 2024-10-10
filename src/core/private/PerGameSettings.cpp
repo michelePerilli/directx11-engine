@@ -1,4 +1,4 @@
-#include "../Engine.h"
+#include "../../Engine.h"
 
 PerGameSettings* PerGameSettings::inst;
 
@@ -12,6 +12,8 @@ PerGameSettings::PerGameSettings() {
     std::wstringstream ss;
     ss << Time::GetDateTimeString(TRUE).c_str();
     inst->m_BootTime = ss.str();
+
+    inst->m_SplashURL = L"../../../assets/img.bmp";
 }
 
 PerGameSettings::~PerGameSettings() = default;
