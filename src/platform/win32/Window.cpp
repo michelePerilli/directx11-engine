@@ -2,35 +2,32 @@
 #include "Window.h"
 
 namespace Win32 {
-
-    Window::Window(std::string className, std::string classTitle, HICON icon, INT width, INT height)
-        : Win32::SubObject(className,classTitle,icon), m_Width(width), m_Height(height)
-    {
-
+    Window::Window(const std::string &className, const std::string &classTitle, HICON icon, const INT width, const INT height)
+        : SubObject(className, classTitle, icon), m_Width(width), m_Height(height) {
     }
 
-    Window::~Window()
-    {
+    Window::~Window() = default;
 
-    }
-
-    VOID Window::Initialize()
-    {
+    VOID Window::Initialize() {
         RECT desktop;
-        const HWND hDesktop = GetDesktopWindow();
-        GetWindowRect(hDesktop, &desktop);
+        GetWindowRect(GetDesktopWindow(), &desktop);
 
-        RECT R = { 0, 0, m_Width, m_Height };
+        RECT R = {0, 0, m_Width, m_Height};
         AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW, false);
-        int width = R.right - R.left;
-        int height = R.bottom - R.top;
 
-        m_Handle = CreateWindow(m_Class.c_str(), m_Title.c_str(),
-            WS_POPUP, ((desktop.right / 2) - (m_Width / 2)), ((desktop.bottom / 2) - (m_Height / 2)), m_Width, m_Height, 0, 0, HInstance(), (void*)this);
+        m_Handle = CreateWindow(m_Class.c_str(),
+                                m_Title.c_str(),
+                                WS_POPUP,
+                                desktop.right / 2 - m_Width / 2,
+                                desktop.bottom / 2 - m_Height / 2,
+                                m_Width,
+                                m_Height,
+                                nullptr,
+                                nullptr,
+                                HInstance(),
+                                this);
 
         ShowWindow(m_Handle, SW_SHOW);
         UpdateWindow(m_Handle);
-
     }
-
 }

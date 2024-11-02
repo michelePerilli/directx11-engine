@@ -3,7 +3,7 @@
 
 namespace Engine {
 
-    class __declspec(dllexport) Simulation : public Win32::IApplication {
+    class ENGINE_DLL Simulation : public Win32::IApplication {
     public:
         Simulation();
 

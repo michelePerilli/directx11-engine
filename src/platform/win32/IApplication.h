@@ -3,7 +3,7 @@
 #define ENTRYAPP(x) Win32::IApplication* EntryApplication() { return new x; }
 
 namespace Win32 {
-    class __declspec(dllexport) IApplication {
+    class ENGINE_DLL IApplication {
     public:
         IApplication();
 

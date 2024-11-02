@@ -3,7 +3,7 @@
 #include <string>
 #include <windows.h>
 
-class __declspec(dllexport) PerGameSettings {
+class ENGINE_DLL PerGameSettings {
 
     static PerGameSettings* inst;
 
@@ -16,23 +16,23 @@ public:
 
 private:
 
-    std::wstring m_GameName;
-    std::wstring m_ShortName;
+    std::string m_GameName;
+    std::string m_ShortName;
     // HICON m_MainIcon{};
-    std::wstring m_BootTime;
-    std::wstring m_SplashURL;
+    std::string m_BootTime;
+    std::string m_SplashURL;
 
 public:
 
-    static std::wstring GameName() { return inst->m_GameName; }
+    static std::string GameName() { return inst->m_GameName; }
 
-    static VOID SetGameName(const std::wstring &name) {
+    static VOID SetGameName(const std::string &name) {
         inst->m_GameName = name;
     }
 
-    static std::wstring ShortName() { return inst->m_ShortName; }
+    static std::string ShortName() { return inst->m_ShortName; }
 
-    static VOID SetShortName(const std::wstring &shortName) {
+    static VOID SetShortName(const std::string &shortName) {
         inst->m_ShortName = shortName;
     }
 
@@ -42,8 +42,9 @@ public:
         LoadIcon(HInstance(), MAKEINTRESOURCE(id));
     }
 
-    static std::wstring BootTime() { return inst->m_BootTime; }
+    static std::string BootTime() { return inst->m_BootTime; }
 
-    static std::wstring SplashURL() { return inst->m_SplashURL; }
+    static std::string SplashURL() { return inst->m_SplashURL; }
+
     // static VOID SetSplashURL(UINT id) { LoadString(HInstance(), id, inst->m_SplashURL, MAX_NAME_STRING); }
 };

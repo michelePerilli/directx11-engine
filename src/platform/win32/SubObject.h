@@ -2,33 +2,33 @@
 
 
 namespace Win32 {
-
-    class __declspec(dllexport) SubObject {
-
+    class ENGINE_DLL SubObject {
     public:
         SubObject(std::string className, std::string classTitle, HICON icon);
-        ~SubObject();
+
+        virtual ~SubObject();
 
         virtual VOID RegisterNewClass();
+
         virtual VOID Initialize() = 0;
 
     protected:
-        static			LRESULT CALLBACK	SetupMessageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-        static			LRESULT				AssignMessageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-        virtual			LRESULT				CommonMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+        static LRESULT CALLBACK SetupMessageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-        virtual			LRESULT				MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) = 0;
+        static LRESULT AssignMessageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-    protected:
-        std::string			m_Class;
-        std::string			m_Title;
+        virtual LRESULT CommonMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-        HICON					m_hIcon;
+        virtual LRESULT MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) = 0;
 
-        HWND					m_Handle;
+        std::string m_Class;
+        std::string m_Title;
+
+        HICON m_hIcon;
+
+        HWND m_Handle{};
+
     public:
-        HWND GetHandle()		{ return m_Handle; }
-
+        HWND GetHandle() const { return m_Handle; }
     };
-
 }

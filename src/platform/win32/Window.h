@@ -3,18 +3,16 @@
 #include "SubObject.h"
 
 namespace Win32 {
-
-    class __declspec(dllexport) Window : public Win32::SubObject {
-
+    class ENGINE_DLL Window : public SubObject {
     public:
-        Window(std::string className, std::string classTitle, HICON icon, INT width, INT height);
-        ~Window();
+        Window(const std::string &className, const std::string &classTitle, HICON icon, INT width, INT height);
 
-        virtual VOID Initialize() override;
+        ~Window() override;
+
+        VOID Initialize() override;
 
     protected:
-        INT				m_Width;
-        INT				m_Height;
+        INT m_Width;
+        INT m_Height;
     };
-
 }

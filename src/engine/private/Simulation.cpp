@@ -2,25 +2,18 @@
 #include "../Simulation.h"
 #include "../../engine/SplashScreen.h"
 
-Engine::Simulation::Simulation()
-{
-}
+Simulation::Simulation() = default;
 
-Engine::Simulation::~Simulation()
-{
-}
+Simulation::~Simulation() = default;
 
-VOID Engine::Simulation::PreInitialize()
-{
-
+VOID Simulation::PreInitialize() {
     Logger::separator();
-    // Logger::info(L"Application Starting...\n");
-    // Logger::info("Game Name: %s\n", PerGameSettings::GameName());
-    // Logger::info("Boot Time: %s\n", Time::GetDateTimeString().c_str());
-    // Logger::info("Engine Mode: %s\n", Engine::EngineModeToString().c_str());
+    Logger::info("Application Starting...");
+    Logger::info("Game Name: %s", PerGameSettings::GameName().c_str());
+    Logger::info("Boot Time: %s", Time::GetDateTimeString().c_str());
+    Logger::info("Engine Mode: %s", EngineModeToString().c_str());
     Logger::separator();
 
     SplashScreen::Open();
-
 
 }

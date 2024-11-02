@@ -4,22 +4,22 @@
 
 namespace SplashScreen {
 
-
-
-    VOID __declspec(dllexport) Open();
-    VOID __declspec(dllexport) Close();
-    VOID __declspec(dllexport) AddMessage(CONST WCHAR* message);
+    VOID ENGINE_DLL Open();
+    VOID ENGINE_DLL Close();
+    VOID ENGINE_DLL AddMessage(const std::string& message);
 
 }
 
-class __declspec(dllexport) SplashWindow : public Win32::Window {
+class ENGINE_DLL SplashWindow final : public Win32::Window {
 
 public:
     SplashWindow();
-    ~SplashWindow();
 
-    virtual			LRESULT				MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override;
+    ~SplashWindow() override;
+
+    LRESULT MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override;
 
 private:
-    WCHAR m_outputMessage[MAX_NAME_STRING];
+    std::string m_outputMessage;
+
 };

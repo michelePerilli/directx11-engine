@@ -2,7 +2,9 @@
 #include <string>
 #include <Windows.h>
 
-class __declspec(dllexport) Logger {
+#include "../core/CoreDef.h"
+
+class ENGINE_DLL Logger {
     static Logger *instance;
 
 public:
@@ -14,11 +16,11 @@ public:
 
     static bool write_log_to_file(const std::string &log);
 
-    static VOID info(const std::string &log);
+    static VOID info(const std::string &log, ...);
 
     static void separator();
 
-    static std::wstring LogDirectory();
+    static std::string LogDirectory();
 
-    static std::wstring LogFile();
+    static std::string LogFile();
 };

@@ -1,9 +1,11 @@
 
 #include "Logger.h"
+
+#include <codecvt>
 #include <fstream>
 #include <Shlobj.h>
 #include "../Engine.h"
-
+#include <cwchar>
 Logger* Logger::instance;
 
 Logger::Logger() {
@@ -17,7 +19,7 @@ bool Logger::write_log_to_file(const std::string &log) {
 
     const auto log_dir = LogDirectory();
     const auto log_file = LogFile();
-    const auto path = std::wstring(log_dir + L"\\" + log_file);
+    const auto path = log_dir + "\\" + log_file;
 
     logFile.open(path.c_str(), std::ios_base::app);
 
@@ -31,37 +33,37 @@ bool Logger::write_log_to_file(const std::string &log) {
     return false;
 }
 
-void Logger::info(const std::string& log) {
-    std::stringstream ss;
-    ss << "[" << Time::GetDateTimeString() << "]  " << log;
-    Logger::write_log_to_file(ss.str());
+void Logger::info(const std::string& log, ...) {
+    CHAR outputBuffer[4096];
+
+    va_list args;
+    va_start(args, log);
+    vsprintf_s(outputBuffer, log.c_str(), args);
+    va_end(args);
+
+    write_log_to_file("[" + Time::GetDateTimeString() + "]  " + outputBuffer);
 }
 
 void Logger::separator() {
-    Logger::write_log_to_file("");
-    Logger::write_log_to_file("----------------------------------------------------------------------------------------------------");
-    Logger::write_log_to_file("");
+    write_log_to_file("");
+    write_log_to_file("----------------------------------------------------------------------------------------------------");
+    write_log_to_file("");
 }
 
-std::wstring Logger::LogDirectory()
-{
-    WCHAR Path[1024];
+std::string Logger::LogDirectory() {
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+
     WCHAR* AppDataLocal;
     SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, nullptr, &AppDataLocal);
-    wcscpy_s(Path, AppDataLocal);
-    wcscat_s(Path, L"\\");
-    wcscat_s(Path, PerGameSettings::GameName().c_str());
-    CreateDirectoryW(Path, nullptr);
-    wcscat_s(Path, L"\\Log");
-    CreateDirectoryW(Path, nullptr);
-    return Path;
+
+    const std::string baseDir = conv.to_bytes(AppDataLocal) + "\\" + PerGameSettings::GameName();
+    const std::string logDir = baseDir + "\\Log";
+
+    CreateDirectory(baseDir.c_str(), nullptr);
+    CreateDirectory(logDir.c_str(), nullptr);
+    return logDir;
 }
 
-std::wstring Logger::LogFile()
-{
-    WCHAR File[1024];
-    wcscpy_s(File, PerGameSettings::GameName().c_str());
-    wcscat_s(File, PerGameSettings::BootTime().c_str());
-    wcscat_s(File, L".log");
-    return File;
+std::string Logger::LogFile() {
+    return PerGameSettings::GameName() + PerGameSettings::BootTime() + ".log";
 }

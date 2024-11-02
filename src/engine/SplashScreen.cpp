@@ -9,76 +9,63 @@ namespace SplashScreen {
 
     SplashWindow* m_SplashWindow;
 
-    VOID Open()
-    {
+    VOID Open() {
         if (m_SplashWindow != nullptr)
             return;
         m_SplashWindow = new SplashWindow();
     }
 
-    VOID Close()
-    {
+    VOID Close() {
         return VOID();
     }
 
-    VOID AddMessage(const WCHAR* message)
-    {
-        PostMessage(m_SplashWindow->GetHandle(), WM_OUTPUTMESSAGE, (WPARAM)message, 0);
+    VOID AddMessage(const std::string& message) {
+        PostMessage(m_SplashWindow->GetHandle(), WM_OUTPUTMESSAGE, reinterpret_cast<WPARAM>(message.c_str()), 0);
     }
 }
 
 
-SplashWindow::SplashWindow()
-    : Win32::Window("SplashScreen", "SplashScreen", NULL, 500, 600)
-{
-    wcscpy_s(m_outputMessage, L"SplashScreen Starting...");
-    Win32::Window::RegisterNewClass();
-    Win32::Window::Initialize();
-
+SplashWindow::SplashWindow() : Window("SplashScreen", "SplashScreen", nullptr, 1280, 720) {
+    m_outputMessage = "SplashScreen Starting...";
+    Window::RegisterNewClass();
+    Window::Initialize();
 }
 
 SplashWindow::~SplashWindow()
-{
-}
+= default;
 
-LRESULT SplashWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-
-    switch (message)
-    {
-        case WM_PAINT:
-        {
-            HBITMAP hbitmap;
-            HDC hdc, hmemdc;
+LRESULT SplashWindow::MessageHandler(HWND hwnd, const UINT message, const WPARAM wParam, const LPARAM lParam) {
+    switch (message) {
+        case WM_PAINT: {
             PAINTSTRUCT ps;
 
-            hdc = BeginPaint(hwnd, &ps);
+            HDC hdc = BeginPaint(hwnd, &ps);
 
-            Win32::Utils::AddBitmap(PerGameSettings::SplashURL().c_str(), hdc);
+            Win32::Utils::AddBitmap(PerGameSettings::SplashURL(), hdc);
 
             SetBkMode(hdc, TRANSPARENT);
             SetTextColor(hdc, RGB(255, 255, 255));
 
-            if (Engine::GetMode() != Engine::EngineMode::RELEASE) {
-
-                std::wstring engineModeText = Engine::EngineModeToString() + L" Mode";
+            // if (GetMode() != RELEASE) {
+                const std::string engineModeText = EngineModeToString() + " Mode";
                 SetTextAlign(hdc, TA_RIGHT);
-                TextOut(hdc, m_Width - 15, 15, reinterpret_cast<LPCSTR>(engineModeText.c_str()), wcslen(engineModeText.c_str()));
-            }
+                TextOut(hdc, m_Width - 15, 15, engineModeText.c_str(), strlen(engineModeText.c_str()));
+            // }
 
             SetTextAlign(hdc, TA_CENTER);
 
-            // TextOutA(hdc, m_Width / 2, m_Height - 30, m_outputMessage, wcslen(m_outputMessage));
+            TextOutA(hdc, m_Width / 2, m_Height - 30, m_outputMessage.c_str(), strlen(m_outputMessage.c_str()));
             EndPaint(hwnd, &ps);
+
         }
         break;
-        case WM_OUTPUTMESSAGE:
-        {
-            WCHAR* msg = (WCHAR*)wParam;
-            wcscpy_s(m_outputMessage, msg);
-            RedrawWindow(GetHandle(), NULL, NULL, RDW_INVALIDATE);
+        case WM_OUTPUTMESSAGE: {
+            const auto* msg = reinterpret_cast<char *>(wParam);
+            m_outputMessage = msg;
+            RedrawWindow(GetHandle(), nullptr, nullptr, RDW_INVALIDATE);
             return 0;
         }
+        default: ;
     }
 
     return CommonMessageHandler(hwnd, message, wParam, lParam);

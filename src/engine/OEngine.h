@@ -1,6 +1,6 @@
 #pragma once
 
-class __declspec(dllexport) OEngine;
+class ENGINE_DLL OEngine;
 
 namespace Engine {
     enum EngineMode : INT {
@@ -13,16 +13,16 @@ namespace Engine {
 
     extern OEngine gEngine;
 
-    VOID __declspec(dllexport) SetMode(EngineMode mode);
-    EngineMode __declspec(dllexport) GetMode();
+    VOID ENGINE_DLL SetMode(EngineMode mode);
+    EngineMode ENGINE_DLL GetMode();
 
-    std::wstring __declspec(dllexport) EngineModeToString();
+    std::string ENGINE_DLL EngineModeToString();
 
 }
 
 using namespace Engine;
 
-class __declspec(dllexport) OEngine {
+class ENGINE_DLL OEngine {
 private:
     EngineMode engineMode;
 
@@ -31,6 +31,6 @@ public:
 
     ~OEngine();
 
-    EngineMode GetEngineMode();
+    EngineMode GetEngineMode() const;
     VOID SetEngineMode(EngineMode mode);
 };

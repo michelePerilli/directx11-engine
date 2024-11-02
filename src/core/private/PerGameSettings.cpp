@@ -6,14 +6,14 @@ PerGameSettings::PerGameSettings() {
 
     inst = this;
 
-    inst->m_GameName = L"undefined";
-    inst->m_ShortName = L"undefined";
+    inst->m_GameName = "undefined";
+    inst->m_ShortName = "undefined";
 
-    std::wstringstream ss;
+    std::stringstream ss;
     ss << Time::GetDateTimeString(TRUE).c_str();
     inst->m_BootTime = ss.str();
 
-    inst->m_SplashURL = L"../../../assets/img.bmp";
+    inst->m_SplashURL = "assets/img.bmp";
 }
 
 PerGameSettings::~PerGameSettings() = default;

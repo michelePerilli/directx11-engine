@@ -4,14 +4,16 @@
 #include <string>
 #include <iomanip>
 
+#include "../core/CoreDef.h"
+
 namespace Time {
 
     /* Get current time in string format */
-    std::string __declspec(dllexport) GetTime(BOOL striped = false);
+    std::string ENGINE_DLL GetTime(BOOL striped = false);
 
     /* Get current date in string format */
-    std::string __declspec(dllexport) GetDate(BOOL striped = false);
+    std::string ENGINE_DLL GetDate(BOOL striped = false);
 
     /* Get current date and time in string format */
-    std::string __declspec(dllexport) GetDateTimeString(BOOL striped = false);
+    std::string ENGINE_DLL GetDateTimeString(BOOL striped = false);
 }

@@ -1,27 +1,24 @@
 #include "../../Engine.h"
 #include "SubObject.h"
 
+#include <utility>
+
 namespace Win32 {
-
     SubObject::SubObject(std::string className, std::string classTitle, HICON icon)
-        : m_Class(className), m_Title(classTitle), m_hIcon(icon)
-    {
+        : m_Class(std::move(className)), m_Title(std::move(classTitle)), m_hIcon(icon), m_Handle(nullptr) {
     }
 
-    SubObject::~SubObject()
-    {
-    }
+    SubObject::~SubObject() = default;
 
 
-    VOID SubObject::RegisterNewClass()
-    {
+    VOID SubObject::RegisterNewClass() {
         WNDCLASSEX wcex;
         wcex.cbSize = sizeof(WNDCLASSEX);
         wcex.style = CS_HREDRAW | CS_VREDRAW;
         wcex.cbClsExtra = 0;
         wcex.cbWndExtra = 0;
         wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-        wcex.hbrBackground = (HBRUSH)(CreateSolidBrush(RGB(46, 46, 46)));
+        wcex.hbrBackground = CreateSolidBrush(RGB(0, 0, 0));
         wcex.hIcon = m_hIcon;
         wcex.hIconSm = m_hIcon;
         wcex.lpszClassName = m_Class.c_str();
@@ -31,32 +28,24 @@ namespace Win32 {
         RegisterClassEx(&wcex);
     }
 
-
-    LRESULT SubObject::SetupMessageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-    {
-        if (msg == WM_NCCREATE)
-        {
-            const CREATESTRUCTW* const pCreate = reinterpret_cast<CREATESTRUCTW*>(lParam);
-            Win32::SubObject* const pWnd = static_cast<Win32::SubObject*>(pCreate->lpCreateParams);
+    LRESULT SubObject::SetupMessageHandler(HWND hWnd, const UINT msg, const WPARAM wParam, const LPARAM lParam) {
+        if (msg == WM_NCCREATE) {
+            const CREATESTRUCTW *const pCreate = reinterpret_cast<CREATESTRUCTW *>(lParam);
+            auto *const pWnd = static_cast<SubObject *>(pCreate->lpCreateParams);
             SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
-            SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Win32::SubObject::AssignMessageHandler));
+            SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&SubObject::AssignMessageHandler));
             return pWnd->MessageHandler(hWnd, msg, wParam, lParam);
         }
         return DefWindowProc(hWnd, msg, wParam, lParam);
     }
 
-    LRESULT SubObject::AssignMessageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-    {
-        Win32::SubObject* const pWnd = reinterpret_cast<Win32::SubObject*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+    LRESULT SubObject::AssignMessageHandler(HWND hWnd, const UINT msg, const WPARAM wParam, const LPARAM lParam) {
+        auto *const pWnd = reinterpret_cast<SubObject *>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
         return pWnd->MessageHandler(hWnd, msg, wParam, lParam);
     }
 
-    LRESULT SubObject::CommonMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-    {
+    LRESULT SubObject::CommonMessageHandler(HWND hwnd, const UINT message, const WPARAM wParam, const LPARAM lParam) {
         return DefWindowProc(hwnd, message, wParam, lParam);
     }
-
-
-#pragma endregion
 
 }

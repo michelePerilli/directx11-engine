@@ -44,6 +44,6 @@ std::string Time::GetDate(const BOOL striped) {
 
 /* Get date time in format '00/00/00 00:00:00' */
 std::string Time::GetDateTimeString(const BOOL striped) {
-    std::string timeString = GetDate(striped) + GetTime(striped);
+    std::string timeString = GetDate(striped) + (striped ? "" : " ") + GetTime(striped);
     return timeString;
 }
