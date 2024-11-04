@@ -6,6 +6,7 @@
 #include <Shlobj.h>
 #include "../Engine.h"
 #include <cwchar>
+#include <iostream>
 Logger* Logger::instance;
 
 Logger::Logger() {
@@ -27,7 +28,7 @@ bool Logger::write_log_to_file(const std::string &log) {
         MessageBox(nullptr, "Unable to open log file...", "Log Error", MB_OK);
         return true;
     }
-
+    std::cout << log << std::endl;
     logFile << log.c_str() << std::endl;
     logFile.close();
     return false;

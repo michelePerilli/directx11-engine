@@ -25,10 +25,8 @@ namespace SplashScreen {
 }
 
 
-SplashWindow::SplashWindow() : Window("SplashScreen", "SplashScreen", nullptr, 1280, 720) {
+SplashWindow::SplashWindow() : Panel("SplashScreen", 1280, 720) {
     m_outputMessage = "SplashScreen Starting...";
-    Window::RegisterNewClass();
-    Window::Initialize();
 }
 
 SplashWindow::~SplashWindow()
@@ -49,12 +47,12 @@ LRESULT SplashWindow::MessageHandler(HWND hwnd, const UINT message, const WPARAM
             // if (GetMode() != RELEASE) {
                 const std::string engineModeText = EngineModeToString() + " Mode";
                 SetTextAlign(hdc, TA_RIGHT);
-                TextOut(hdc, m_Width - 15, 15, engineModeText.c_str(), strlen(engineModeText.c_str()));
+                TextOut(hdc, width - 15, 15, engineModeText.c_str(), strlen(engineModeText.c_str()));
             // }
 
             SetTextAlign(hdc, TA_CENTER);
 
-            TextOutA(hdc, m_Width / 2, m_Height - 30, m_outputMessage.c_str(), strlen(m_outputMessage.c_str()));
+            TextOutA(hdc, width / 2, height - 30, m_outputMessage.c_str(), strlen(m_outputMessage.c_str()));
             EndPaint(hwnd, &ps);
 
         }

@@ -28,7 +28,7 @@ std::string Time::GetDate(const BOOL striped) {
     tm ltm{};
     localtime_s(&ltm, &now);
     std::wstringstream wss;
-    wss << std::put_time(&ltm, L"%d/%m/%y");
+    wss << std::put_time(&ltm, L"%y/%m/%d");
     std::wstring timeString = wss.str();
 
     if (striped) {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../platform/win32/Window.h"
+#include "../platform/win32/Panel.h"
 
 namespace SplashScreen {
 
@@ -10,7 +10,7 @@ namespace SplashScreen {
 
 }
 
-class ENGINE_DLL SplashWindow final : public Win32::Window {
+class ENGINE_DLL SplashWindow: public Panel {
 
 public:
     SplashWindow();

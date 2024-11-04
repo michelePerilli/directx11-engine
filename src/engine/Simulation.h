@@ -9,6 +9,6 @@ namespace Engine {
 
         ~Simulation() override;
 
-        virtual VOID PreInitialize() override;
+        VOID PreInitialize() override;
     };
 }

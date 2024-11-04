@@ -24,8 +24,8 @@ namespace Win32::Utils {
         }
 
         // Unitialize and deallocate resources
-        ::DeleteDC(hLocalDC);
-        ::DeleteObject(hBitmap);
+        DeleteDC(hLocalDC);
+        DeleteObject(hBitmap);
         return true;
     }
 }
