@@ -1,7 +1,7 @@
-#include "../Engine.h"
-#include "SplashScreen.h"
+#include "../../Engine.h"
+#include "../SplashScreen.h"
 
-#include "../platform/win32/Win32Utils.h"
+#include "../../platform/win32/Win32Utils.h"
 
 namespace SplashScreen {
 

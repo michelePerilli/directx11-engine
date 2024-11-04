@@ -18,7 +18,7 @@ private:
 
     std::string m_GameName;
     std::string m_ShortName;
-    // HICON m_MainIcon{};
+    HICON m_MainIcon{};
     std::string m_BootTime;
     std::string m_SplashURL;
 
@@ -36,9 +36,10 @@ public:
         inst->m_ShortName = shortName;
     }
 
-    // static HICON MainIcon() { return inst->m_MainIcon; }
+    static HICON MainIcon() { return inst->m_MainIcon; }
 
     static VOID SetMainIcon(UINT id) {
+
         LoadIcon(HInstance(), MAKEINTRESOURCE(id));
     }
 
