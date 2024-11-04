@@ -1,8 +1,9 @@
 #pragma once
 #include <chrono>
-#include <iostream>
 
 #include "IApplication.h"
+#include "Panel.h"
+#include "../../interface/Keyboard.h"
 #include "../../common/Logger.h"
 #include "../../exception/EngineException.h"
 
@@ -23,7 +24,7 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         EntryPointApplication->Initialize();
         int frameCount = 0;
         auto lastTime = std::chrono::high_resolution_clock::now();
-
+        const Panel wnd("Pippo", 800, 200);
 
         MSG msg = {nullptr};
         while (msg.message != WM_QUIT) {
@@ -32,6 +33,10 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
             } else {
+
+                if (wnd.kbd.KeyIsPressed( VK_SPACE) ) {
+                    Logger::info("KeyPressed Space");
+                }
                 EntryPointApplication->Update();
             }
 

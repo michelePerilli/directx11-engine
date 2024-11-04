@@ -10,14 +10,11 @@ namespace SplashScreen {
 
 }
 
-class ENGINE_DLL SplashWindow: public Panel {
+class ENGINE_DLL SplashWindow {
 
 public:
     SplashWindow();
 
-    ~SplashWindow() override;
-
-    LRESULT MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override;
 
 private:
     std::string m_outputMessage;
