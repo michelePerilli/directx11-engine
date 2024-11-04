@@ -24,7 +24,7 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         EntryPointApplication->Initialize();
         int frameCount = 0;
         auto lastTime = std::chrono::high_resolution_clock::now();
-        const Panel wnd("Pippo", 800, 200);
+        Panel wnd("Pippo", 800, 200);
 
         MSG msg = {nullptr};
         while (msg.message != WM_QUIT) {
@@ -34,8 +34,15 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
                 DispatchMessage(&msg);
             } else {
 
-                if (wnd.kbd.KeyIsPressed( VK_SPACE) ) {
+                if (wnd.keyboard.KeyIsPressed( VK_SPACE) ) {
                     Logger::info("KeyPressed Space");
+                }
+                while (!wnd.mouse.IsEmpty()) {
+                    if (wnd.mouse.Read().GetType() == Mouse::Event::Type::Move) {
+                        std::ostringstream s;
+                        s << "Mouse: " << wnd.mouse.GetPosX() << ", " << wnd.mouse.GetPosY();
+                        wnd.SetTitle(s.str());
+                    }
                 }
                 EntryPointApplication->Update();
             }

@@ -3,6 +3,7 @@
 #include "../../include/WinSDK.h"
 #include "../../exception/EngineException.h"
 #include "../../interface/Keyboard.h"
+#include "../../interface/Mouse.h"
 
 class ENGINE_DLL Panel {
 
@@ -25,11 +26,6 @@ class ENGINE_DLL Panel {
         static PanelClass panelClass;
         HINSTANCE hInst;
     };
-    // static LRESULT AssignMessageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-    // static LRESULT CommonMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-
-    // virtual LRESULT MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) = 0;
 
     static LRESULT CALLBACK HandleMsgSetup( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noexcept;
     static LRESULT CALLBACK HandleMsgThunk( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noexcept;
@@ -38,10 +34,13 @@ class ENGINE_DLL Panel {
 
     HWND hWnd;
 public:
-    Keyboard kbd = Keyboard();
-    std::string text = "ciao";
+    Keyboard keyboard;
+    Mouse mouse;
     Panel(const char *name, int width, int height);
     ~Panel();
+
+    void SetTitle(const std::string &title) const;
+
     Panel(const Panel &) = delete;
     Panel &operator=(const Panel &) = delete;
 

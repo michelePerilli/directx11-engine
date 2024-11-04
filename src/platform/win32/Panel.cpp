@@ -38,13 +38,12 @@ HINSTANCE Panel::PanelClass::GetInstance() noexcept {
 }
 
 Panel::Panel(const char *name, const int width, const int height) {
-
     RECT wr;
     wr.left = 100;
     wr.right = width + wr.left;
     wr.top = 100;
     wr.bottom = height + wr.top;
-    if (FAILED(AdjustWindowRect( &wr,WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,FALSE ))) {
+    if (AdjustWindowRect(&wr,WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,FALSE) == 0) {
         throw CHWND_LAST_EXCEPT();
     };
 
@@ -61,6 +60,13 @@ Panel::Panel(const char *name, const int width, const int height) {
 Panel::~Panel() {
     DestroyWindow(hWnd);
 }
+
+void Panel::SetTitle(const std::string &title) const {
+    if (SetWindowText(hWnd, title.c_str()) == 0) {
+        throw CHWND_LAST_EXCEPT();
+    }
+}
+
 
 LRESULT CALLBACK Panel::HandleMsgSetup(HWND hWnd, const UINT msg, const WPARAM wParam, const LPARAM lParam) noexcept {
     if (msg == WM_NCCREATE) {
@@ -86,32 +92,66 @@ LRESULT CALLBACK Panel::HandleMsgThunk(HWND hWnd, const UINT msg, const WPARAM w
 }
 
 LRESULT Panel::HandleMsg(HWND hWnd, const UINT msg, const WPARAM wParam, const LPARAM lParam) noexcept {
+    const POINTS pt = MAKEPOINTS(lParam);
     switch (msg) {
         case WM_CLOSE:
             PostQuitMessage(0);
             return 0;
         case WM_KILLFOCUS:
-            kbd.ClearState();
+            keyboard.ClearState();
             break;
 
         /*********** KEYBOARD MESSAGES ***********/
         case WM_KEYDOWN:
         // syskey commands need to be handled to track ALT key (VK_MENU) and F10
         case WM_SYSKEYDOWN:
-            if (!(lParam & 0x40000000) || kbd.AutorepeatIsEnabled()) // filter autorepeat
+            if (!(lParam & 0x40000000) || keyboard.AutorepeatIsEnabled()) // filter autorepeat
             {
-                kbd.OnKeyPressed(static_cast<unsigned char>(wParam));
+                keyboard.OnKeyPressed(static_cast<unsigned char>(wParam));
             }
             break;
         case WM_KEYUP:
         case WM_SYSKEYUP:
-            kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
+            keyboard.OnKeyReleased(static_cast<unsigned char>(wParam));
             break;
         case WM_CHAR:
-            kbd.OnChar(static_cast<char>(wParam));
+            keyboard.OnChar(static_cast<char>(wParam));
             break;
-        default: ;
+
         /*********** END KEYBOARD MESSAGES ***********/
+
+        /************** MOUSE MESSAGES ***************/
+        case WM_MOUSEMOVE:
+            mouse.OnMouseMove(pt.x, pt.y);
+            break;
+        case WM_LBUTTONDOWN:
+            mouse.OnLeftPressed(pt.x, pt.y);
+            break;
+        case WM_LBUTTONUP:
+            mouse.OnLeftReleased(pt.x, pt.y);
+            break;
+        case WM_RBUTTONDOWN:
+            mouse.OnRightPressed(pt.x, pt.y);
+            break;
+        case WM_RBUTTONUP:
+            mouse.OnRightReleased(pt.x, pt.y);
+            break;
+        case WM_MOUSEWHEEL:
+            if (GET_WHEEL_DELTA_WPARAM(wParam) >= 0) {
+                mouse.OnWheelUp(pt.x, pt.y);
+            } else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
+                mouse.OnWheelDown(pt.x, pt.y);
+            }
+            break;
+        case WM_MBUTTONDOWN:
+            // unimplemented yet
+            break;
+        case WM_MBUTTONUP:
+            // unimplemented yet
+            break;
+        /************ END MOUSE MESSAGES *************/
+
+        default: ;
     }
 
     return DefWindowProc(hWnd, msg, wParam, lParam);
