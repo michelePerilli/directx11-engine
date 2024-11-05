@@ -53,6 +53,12 @@ Panel::Panel(const char *name, const int width, const int height) {
         CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top,
         nullptr, nullptr, PanelClass::GetInstance(), this
     );
+
+    if (hWnd == nullptr) {
+        throw CHWND_LAST_EXCEPT();
+    }
+
+    pGfx = std::make_unique<Graphics>(hWnd);
 }
 
 Panel::~Panel() {
@@ -84,6 +90,10 @@ std::optional<int> Panel::ProcessWindowMessages() const {
         DispatchMessage(&msg);
     }
     return {};
+}
+
+Graphics & Panel::Gfx() {
+    return *pGfx;
 }
 
 

@@ -1,11 +1,13 @@
 #pragma once
 
+#include <memory>
 #include <optional>
 
 #include "../../include/WinSDK.h"
 #include "../../exception/EngineException.h"
 #include "../../interface/Keyboard.h"
 #include "../../interface/Mouse.h"
+#include "../../interface/Graphics.h"
 
 class ENGINE_DLL Panel {
 
@@ -35,6 +37,7 @@ class ENGINE_DLL Panel {
 
 
     HWND hWnd;
+    std::unique_ptr<Graphics> pGfx;
 public:
     Keyboard keyboard;
     Mouse mouse;
@@ -45,8 +48,8 @@ public:
     void Open() const;
     void Close() const;
 
-    std::optional<int> ProcessWindowMessages() const;
-
+    [[nodiscard]] std::optional<int> ProcessWindowMessages() const;
+    Graphics &Gfx();
 
     Panel(const Panel &) = delete;
     Panel &operator=(const Panel &) = delete;

@@ -11,3 +11,4 @@ add_library(GameEngine SHARED ${srcs})
 
 target_include_directories(GameEngine PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
+target_link_libraries(GameEngine d3d11)
