@@ -16,6 +16,8 @@ namespace Win32 {
         virtual VOID Initialize() = 0;
 
         virtual VOID Update() = 0;
+
+        virtual VOID SetFPS(int fps) = 0;
     };
 
     IApplication* EntryApplication();

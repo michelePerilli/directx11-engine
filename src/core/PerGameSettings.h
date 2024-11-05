@@ -16,6 +16,7 @@ public:
 
 private:
 
+    int exit_button = -1;
     std::string m_GameName;
     std::string m_ShortName;
     HICON m_MainIcon{};
@@ -23,6 +24,13 @@ private:
     std::string m_SplashURL;
 
 public:
+    [[nodiscard]] static int ExitButton() {
+        return inst->exit_button;
+    }
+
+    static void SetExitButton(const int exitButton) {
+        inst->exit_button = exitButton;
+    }
 
     static std::string GameName() { return inst->m_GameName; }
 

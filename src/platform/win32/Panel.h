@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include "../../include/WinSDK.h"
 #include "../../exception/EngineException.h"
 #include "../../interface/Keyboard.h"
@@ -40,13 +42,16 @@ public:
     ~Panel();
 
     void SetTitle(const std::string &title) const;
+    void Open() const;
+    void Close() const;
+
+    std::optional<int> ProcessWindowMessages() const;
+
 
     Panel(const Panel &) = delete;
     Panel &operator=(const Panel &) = delete;
 
-    HWND GetHandle() {
-        return hWnd;
-    }
+    [[nodiscard]] HWND GetHandle() const;
 
     class Exception final : public EngineException {
     public:

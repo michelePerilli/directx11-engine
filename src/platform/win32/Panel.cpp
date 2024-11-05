@@ -53,8 +53,6 @@ Panel::Panel(const char *name, const int width, const int height) {
         CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top,
         nullptr, nullptr, PanelClass::GetInstance(), this
     );
-    // show window
-    ShowWindow(hWnd,SW_SHOWDEFAULT);
 }
 
 Panel::~Panel() {
@@ -65,6 +63,27 @@ void Panel::SetTitle(const std::string &title) const {
     if (SetWindowText(hWnd, title.c_str()) == 0) {
         throw CHWND_LAST_EXCEPT();
     }
+}
+
+void Panel::Open() const {
+    ShowWindow(hWnd,SW_SHOWDEFAULT);
+}
+
+void Panel::Close() const {
+    CloseWindow(hWnd);
+}
+
+// todo per uso futuro.
+std::optional<int> Panel::ProcessWindowMessages() const {
+    MSG msg;
+    while (PeekMessage(&msg, hWnd, 0, 0, PM_REMOVE)) {
+        if (msg.message == WM_QUIT) {
+            return msg.wParam;
+        }
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+    return {};
 }
 
 
@@ -157,6 +176,10 @@ LRESULT Panel::HandleMsg(HWND hWnd, const UINT msg, const WPARAM wParam, const L
     return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
+
+HWND Panel::GetHandle() const {
+    return hWnd;
+}
 
 // Window Exception Stuff
 inline Panel::Exception::Exception(int line, const char *file, HRESULT hr) noexcept: EngineException(line, file),
