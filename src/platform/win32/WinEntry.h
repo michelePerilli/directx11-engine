@@ -21,7 +21,7 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         EntryPointApplication->Initialize();
 
         int frameCount = 0;
-        auto lastTime = std::chrono::high_resolution_clock::now();
+        Time::Timer timer;
 
         MSG msg = {nullptr};
         while (msg.message != WM_QUIT) {
@@ -36,13 +36,10 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
             frameCount++;
 
-            auto currentTime = std::chrono::high_resolution_clock::now();
-
-            if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count() / 1000.0f >=
-                1.0f) {
+            if (timer.Peek() >= 1.0f) {
                 EntryPointApplication->SetFPS(frameCount);
                 frameCount = 0;
-                lastTime = currentTime;
+                timer.Mark();
             }
         }
     } catch (EngineException &e) {

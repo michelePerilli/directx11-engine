@@ -17,7 +17,7 @@ std::string Time::GetTime(const BOOL striped) {
             return c == L':';
         });
     }
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+    std::wstring_convert<std::codecvt_utf8<wchar_t> > converter;
 
     return converter.to_bytes(timeString);
 }
@@ -37,7 +37,7 @@ std::string Time::GetDate(const BOOL striped) {
         });
     }
 
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+    std::wstring_convert<std::codecvt_utf8<wchar_t> > converter;
 
     return converter.to_bytes(timeString);
 }
@@ -46,4 +46,19 @@ std::string Time::GetDate(const BOOL striped) {
 std::string Time::GetDateTimeString(const BOOL striped) {
     std::string timeString = GetDate(striped) + (striped ? "" : " ") + GetTime(striped);
     return timeString;
+}
+
+Time::Timer::Timer() noexcept {
+    last = std::chrono::steady_clock::now();
+}
+
+float Time::Timer::Mark() noexcept {
+    const auto old = last;
+    last = std::chrono::steady_clock::now();
+    const std::chrono::duration<float> frameTime = last - old;
+    return frameTime.count();
+}
+
+float Time::Timer::Peek() const noexcept {
+    return std::chrono::duration<float>(std::chrono::steady_clock::now() - last).count();
 }
