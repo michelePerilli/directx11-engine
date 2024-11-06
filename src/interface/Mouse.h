@@ -1,7 +1,7 @@
 #pragma once
 #include <queue>
 
-class Mouse {
+class ENGINE_DLL Mouse {
     friend class Panel;
 
 public:

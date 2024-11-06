@@ -2,7 +2,7 @@
 #include <queue>
 #include <bitset>
 
-class Keyboard {
+class ENGINE_DLL Keyboard {
     friend class Panel;
 
 public:
