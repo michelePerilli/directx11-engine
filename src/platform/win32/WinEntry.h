@@ -1,22 +1,25 @@
 #pragma once
-#include <chrono>
-
 #include "IApplication.h"
 #include "Panel.h"
 #include "../../common/Logger.h"
-#include "../../exception/EngineException.h"
+#include "../../exception/WindowException.h"
+#include "../../exception/Exception.h"
 
 extern Win32::IApplication *EntryApplication();
 
 
 int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     try {
-        const auto EntryPointApplication = EntryApplication();
 
         Logger logger;
-        PerGameSettings GameSettings;
+        PerGameSettings gameSettings;
+        Logger::info("Engine initialization...");
+        const auto EntryPointApplication = EntryApplication();
 
+        Logger::info("Setting up things...");
         EntryPointApplication->SetupPerGameSettings();
+
+        Logger::info("Loading application...");
         EntryPointApplication->PreInitialize();
         EntryPointApplication->Initialize();
 
@@ -42,8 +45,8 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
                 timer.Mark();
             }
         }
-    } catch (EngineException &e) {
-        Logger::info("EngineException - %s",  e.what());
+    } catch (Exception &e) {
+        Logger::error(e);
     } catch (std::exception &e) {
         Logger::info("std::exception - %s", e.what());
     }

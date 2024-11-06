@@ -1,10 +1,5 @@
 #include "../../Engine.h"
 #include "Panel.h"
-#include <sstream>
-
-// error exception helper macro
-#define eException( hr ) Panel::Exception( __LINE__, __FILE__, hr )
-#define CHWND_LAST_EXCEPT() Panel::Exception( __LINE__, __FILE__, GetLastError() )
 
 Panel::PanelClass Panel::PanelClass::panelClass;
 
@@ -44,7 +39,7 @@ Panel::Panel(const char *name, const int width, const int height) {
     wr.top = 100;
     wr.bottom = height + wr.top;
     if (AdjustWindowRect(&wr,WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,FALSE) == 0) {
-        throw CHWND_LAST_EXCEPT();
+        throw std::runtime_error("Failed to get window size");
     };
 
     hWnd = CreateWindow(
@@ -55,7 +50,7 @@ Panel::Panel(const char *name, const int width, const int height) {
     );
 
     if (hWnd == nullptr) {
-        throw CHWND_LAST_EXCEPT();
+        throw std::runtime_error("Failed to create window");
     }
 
     pGfx = std::make_unique<Graphics>(hWnd);
@@ -67,7 +62,7 @@ Panel::~Panel() {
 
 void Panel::SetTitle(const std::string &title) const {
     if (SetWindowText(hWnd, title.c_str()) == 0) {
-        throw CHWND_LAST_EXCEPT();
+        throw std::runtime_error("Failed to set title");
     }
 }
 
@@ -134,7 +129,7 @@ LRESULT Panel::HandleMsg(HWND hWnd, const UINT msg, const WPARAM wParam, const L
         case WM_KEYDOWN:
         // syskey commands need to be handled to track ALT key (VK_MENU) and F10
         case WM_SYSKEYDOWN:
-            if (!(lParam & 0x40000000) || keyboard.AutorepeatIsEnabled()) // filter autorepeat
+            if (!(lParam & 0x40000000) || keyboard.AutoRepeatIsEnabled()) // filter autorepeat
             {
                 keyboard.OnKeyPressed(static_cast<unsigned char>(wParam));
             }
@@ -189,45 +184,4 @@ LRESULT Panel::HandleMsg(HWND hWnd, const UINT msg, const WPARAM wParam, const L
 
 HWND Panel::GetHandle() const {
     return hWnd;
-}
-
-// Window Exception Stuff
-inline Panel::Exception::Exception(int line, const char *file, HRESULT hr) noexcept: EngineException(line, file),
-    hr(hr) {
-}
-
-inline const char *Panel::Exception::what() const noexcept {
-    std::ostringstream oss;
-    oss << GetOriginString() << " " << GetErrorString();
-
-    whatBuffer = oss.str();
-    return whatBuffer.c_str();
-}
-
-inline std::string Panel::Exception::TranslateErrorCode(HRESULT hr) noexcept {
-    char *pMsgBuf = nullptr;
-    // windows will allocate memory for err string and make our pointer point to it
-    const DWORD nMsgLen = FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER |
-        FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-        nullptr, hr,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        reinterpret_cast<LPSTR>(&pMsgBuf), 0, nullptr
-    );
-    // 0 string length returned indicates a failure
-    if (nMsgLen == 0) {
-        return "Unidentified error code";
-    }
-    // copy error string from windows-allocated buffer to std::string
-    std::string errorString = pMsgBuf;
-    // free windows buffer
-    LocalFree(pMsgBuf);
-    return errorString;
-}
-
-inline HRESULT Panel::Exception::GetErrorCode() const noexcept {
-    return hr;
-}
-
-inline std::string Panel::Exception::GetErrorString() const noexcept {
-    return TranslateErrorCode(hr);
 }

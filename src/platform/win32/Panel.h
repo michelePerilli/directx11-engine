@@ -4,7 +4,7 @@
 #include <optional>
 
 #include "../../include/WinSDK.h"
-#include "../../exception/EngineException.h"
+#include "../../exception/COMException.h"
 #include "../../interface/Keyboard.h"
 #include "../../interface/Mouse.h"
 #include "../../interface/Graphics.h"
@@ -56,21 +56,6 @@ public:
 
     [[nodiscard]] HWND GetHandle() const;
 
-    class Exception final : public EngineException {
-    public:
-        Exception(int line, const char *file, HRESULT hr) noexcept;
-
-        const char *what() const noexcept override;
-
-        static std::string TranslateErrorCode(HRESULT hr) noexcept;
-
-        HRESULT GetErrorCode() const noexcept;
-
-        std::string GetErrorString() const noexcept;
-
-    private:
-        HRESULT hr;
-    };
 };
 
 

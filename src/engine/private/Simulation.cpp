@@ -1,6 +1,5 @@
 #include "../../Engine.h"
 #include "../Simulation.h"
-#include "../../engine/SplashScreen.h"
 
 Simulation::Simulation() = default;
 
@@ -13,7 +12,5 @@ VOID Simulation::PreInitialize() {
     Logger::info("Boot Time: %s", Time::GetDateTimeString().c_str());
     Logger::info("Engine Mode: %s", EngineModeToString().c_str());
     Logger::separator();
-
-    SplashScreen::Open();
 
 }

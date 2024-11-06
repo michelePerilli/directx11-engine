@@ -1,6 +1,7 @@
 #pragma once
 #include <queue>
 #include <bitset>
+#include "../core/Core.h"
 
 class ENGINE_DLL Keyboard {
     friend class Panel;
@@ -21,27 +22,17 @@ public:
         unsigned char code;
 
     public:
-        Event() noexcept : type(Type::Invalid), code(0u) {
-        }
+        Event() noexcept;
 
-        Event(const Type type, const unsigned char code) noexcept : type(type), code(code) {
-        }
+        Event(Type type, unsigned char code) noexcept;
 
-        bool IsPress() const noexcept {
-            return type == Type::Press;
-        }
+        [[nodiscard]] bool IsPress() const noexcept;
 
-        bool IsRelease() const noexcept {
-            return type == Type::Release;
-        }
+        [[nodiscard]] bool IsRelease() const noexcept;
 
-        bool IsValid() const noexcept {
-            return type != Type::Invalid;
-        }
+        [[nodiscard]] bool IsValid() const noexcept;
 
-        unsigned char GetCode() const noexcept {
-            return code;
-        }
+        [[nodiscard]] unsigned char GetCode() const noexcept;
     };
 
     Keyboard() = default;
@@ -51,98 +42,50 @@ public:
     Keyboard &operator=(const Keyboard &) = delete;
 
     // key event stuff
-    bool KeyIsPressed(const unsigned char keycode) const noexcept {
-        return keystates[keycode];
-    }
+    bool KeyIsPressed(unsigned char keycode) const noexcept;
 
-    Event ReadKey() noexcept {
-        if (!keybuffer.empty()) {
-            const Event e = keybuffer.front();
-            keybuffer.pop();
-            return e;
-        }
-        return {};
-    }
+    Event ReadKey() noexcept;
 
-    bool KeyIsEmpty() const noexcept {
-        return keybuffer.empty();
-    }
+    bool KeyIsEmpty() const noexcept;
 
-    void FlushKey() noexcept {
-        keybuffer = std::queue<Event>();
-    }
+    void FlushKey() noexcept;
 
     // char event stuff
-    char ReadChar() noexcept {
-        if (!charbuffer.empty()) {
-            const char charCode = charbuffer.front();
-            charbuffer.pop();
-            return charCode;
-        }
-        return 0;
-    }
+    char ReadChar() noexcept;
 
-    bool CharIsEmpty() const noexcept {
-        return charbuffer.empty();
-    }
+    bool CharIsEmpty() const noexcept;
 
-    void FlushChar() noexcept {
-        charbuffer = std::queue<char>();
-    }
+    void FlushChar() noexcept;
 
-    void Flush() noexcept {
-        FlushKey();
-        FlushChar();
-    }
+    void Flush() noexcept;
 
-    // autorepeat control
-    void EnableAutorepeat() noexcept {
-        autorepeatEnabled = true;
-    }
+    // auto repeat control
+    void EnableAutoRepeat() noexcept;
 
-    void DisableAutorepeat() noexcept {
-        autorepeatEnabled = false;
-    }
+    void DisableAutoRepeat() noexcept;
 
-    bool AutorepeatIsEnabled() const noexcept {
-        return autorepeatEnabled;
-    }
+    bool AutoRepeatIsEnabled() const noexcept;
 
 private:
-    void OnKeyPressed(unsigned char keycode) noexcept {
-        keystates[keycode] = true;
-        keybuffer.emplace(Event::Type::Press, keycode);
-        TrimBuffer(keybuffer);
-    }
+    void OnKeyPressed(unsigned char keycode) noexcept;
 
-    void OnKeyReleased(unsigned char keycode) noexcept {
-        keystates[keycode] = false;
-        keybuffer.emplace(Event::Type::Release, keycode);
-        TrimBuffer(keybuffer);
-    }
+    void OnKeyReleased(unsigned char keycode) noexcept;
 
-    void OnChar(char character) noexcept {
-        charbuffer.push(character);
-        TrimBuffer(charbuffer);
-    }
+    void OnChar(char character) noexcept;
 
-    void ClearState() noexcept {
-        keystates.reset();
-    }
+    void ClearState() noexcept;
 
 
     template<typename T>
-    static void TrimBuffer(std::queue<T> &buffer) noexcept {
-        while (buffer.size() > bufferSize) {
-            buffer.pop();
-        }
-    }
+    static void TrimBuffer(std::queue<T> &buffer) noexcept;
 
 
     static constexpr unsigned int nKeys = 256u;
     static constexpr unsigned int bufferSize = 16u;
-    bool autorepeatEnabled = false;
-    std::bitset<nKeys> keystates;
-    std::queue<Event> keybuffer;
-    std::queue<char> charbuffer;
+    bool autoRepeatEnabled = false;
+    std::bitset<nKeys> keyStates;
+    std::queue<Event> keyBuffer;
+    std::queue<char> charBuffer;
 };
+
+

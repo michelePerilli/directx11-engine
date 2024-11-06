@@ -35,7 +35,7 @@ bool Logger::write_log_to_file(const std::string &log) {
 }
 
 void Logger::info(const std::string& log, ...) {
-    CHAR outputBuffer[4096];
+    char outputBuffer[4096];
 
     va_list args;
     va_start(args, log);
@@ -44,6 +44,11 @@ void Logger::info(const std::string& log, ...) {
 
     write_log_to_file("[" + Time::GetDateTimeString() + "]  " + outputBuffer);
 }
+
+void Logger::error(const Exception& loggable) {
+    info(loggable.Print());
+}
+
 
 void Logger::separator() {
     write_log_to_file("");
