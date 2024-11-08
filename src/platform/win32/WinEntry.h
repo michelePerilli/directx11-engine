@@ -10,7 +10,6 @@ extern Win32::IApplication *EntryApplication();
 
 int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     try {
-
         Logger logger;
         PerGameSettings gameSettings;
         Logger::info("Engine initialization...");
@@ -28,7 +27,6 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
         MSG msg = {nullptr};
         while (msg.message != WM_QUIT) {
-
             // If there are Window messages then process them.
             if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
                 TranslateMessage(&msg);

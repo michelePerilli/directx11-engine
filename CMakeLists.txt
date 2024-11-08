@@ -7,8 +7,8 @@ add_definitions(-DBUILD_DLL)
 
 # Build HLSL shaders
 add_custom_target(shader)
-set(vertex shader/vertex-shader.hlsl)
-set(pixel shader/pixel-shader.hlsl)
+set(vertex shader/ColorBlendVS.hlsl shader/ColorIndexVS.hlsl shader/TextureVS.hlsl)
+set(pixel shader/ColorBlendPS.hlsl shader/ColorIndexPS.hlsl shader/TexturePS.hlsl)
 
 set(HLSL_SHADER_FILES ${vertex} ${pixel})
 
@@ -36,5 +36,8 @@ add_dependencies(GameEngine shader)
 
 target_include_directories(GameEngine PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
+add_subdirectory(libs/DirectXMath-main)
 target_link_libraries(GameEngine d3d11)
+target_link_libraries(GameEngine d3dx11)
 target_link_libraries(GameEngine D3DCompiler.lib)
+target_link_libraries(GameEngine DirectXMath)

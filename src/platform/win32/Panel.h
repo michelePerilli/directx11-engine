@@ -38,6 +38,8 @@ class ENGINE_DLL Panel {
 
     HWND hWnd;
     std::unique_ptr<Graphics> pGfx;
+    int width;
+    int height;
 public:
     Keyboard keyboard;
     Mouse mouse;

@@ -32,7 +32,9 @@ HINSTANCE Panel::PanelClass::GetInstance() noexcept {
     return panelClass.hInst;
 }
 
-Panel::Panel(const char *name, const int width, const int height) {
+Panel::Panel(const char *name, const int width, const int height)
+    : width(width),
+      height(height) {
     RECT wr;
     wr.left = 100;
     wr.right = width + wr.left;
@@ -87,7 +89,7 @@ std::optional<int> Panel::ProcessWindowMessages() const {
     return {};
 }
 
-Graphics & Panel::Gfx() {
+Graphics &Panel::Gfx() {
     return *pGfx;
 }
 
