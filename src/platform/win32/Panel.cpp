@@ -1,5 +1,8 @@
 #include "../../Engine.h"
 #include "Panel.h"
+#include "../../libs/imgui/imgui_impl_win32.h"
+
+
 
 Panel::PanelClass Panel::PanelClass::panelClass;
 
@@ -55,10 +58,12 @@ Panel::Panel(const char *name, const int width, const int height)
         throw std::runtime_error("Failed to create window");
     }
 
+    ImGui_ImplWin32_Init(hWnd);
     pGfx = std::make_unique<Graphics>(hWnd);
 }
 
 Panel::~Panel() {
+    ImGui_ImplWin32_Shutdown();
     DestroyWindow(hWnd);
 }
 
@@ -118,6 +123,10 @@ LRESULT CALLBACK Panel::HandleMsgThunk(HWND hWnd, const UINT msg, const WPARAM w
 }
 
 LRESULT Panel::HandleMsg(HWND hWnd, const UINT msg, const WPARAM wParam, const LPARAM lParam) noexcept {
+    if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam)) {
+        return true;
+    }
+
     const POINTS pt = MAKEPOINTS(lParam);
     switch (msg) {
         case WM_CLOSE:
@@ -131,6 +140,10 @@ LRESULT Panel::HandleMsg(HWND hWnd, const UINT msg, const WPARAM wParam, const L
         case WM_KEYDOWN:
         // syskey commands need to be handled to track ALT key (VK_MENU) and F10
         case WM_SYSKEYDOWN:
+
+            if (ImGui::GetIO().WantCaptureKeyboard) {
+                break;
+            }
             if (!(lParam & 0x40000000) || keyboard.AutoRepeatIsEnabled()) // filter autorepeat
             {
                 keyboard.OnKeyPressed(static_cast<unsigned char>(wParam));
@@ -138,9 +151,15 @@ LRESULT Panel::HandleMsg(HWND hWnd, const UINT msg, const WPARAM wParam, const L
             break;
         case WM_KEYUP:
         case WM_SYSKEYUP:
+            if (ImGui::GetIO().WantCaptureKeyboard) {
+                break;
+            }
             keyboard.OnKeyReleased(static_cast<unsigned char>(wParam));
             break;
         case WM_CHAR:
+            if (ImGui::GetIO().WantCaptureKeyboard) {
+                break;
+            }
             keyboard.OnChar(static_cast<char>(wParam));
             break;
 
@@ -148,21 +167,56 @@ LRESULT Panel::HandleMsg(HWND hWnd, const UINT msg, const WPARAM wParam, const L
 
         /************** MOUSE MESSAGES ***************/
         case WM_MOUSEMOVE:
-            mouse.OnMouseMove(pt.x, pt.y);
+            if (ImGui::GetIO().WantCaptureMouse) {
+                break;
+            }
+            if (pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height) {
+                mouse.OnMouseMove(pt.x, pt.y);
+                if (!mouse.IsInWindow()) {
+                    SetCapture(hWnd);
+                    mouse.OnMouseEnter();
+                }
+            } else {
+                if (wParam & (MK_LBUTTON | MK_RBUTTON)) {
+                    mouse.OnMouseMove(pt.x, pt.y);
+                }
+                // button up -> release capture / log event for leaving
+                else {
+                    ReleaseCapture();
+                    mouse.OnMouseLeave();
+                }
+            }
+        // mouse.OnMouseMove(pt.x, pt.y);
             break;
         case WM_LBUTTONDOWN:
+            SetForegroundWindow( hWnd );
+            if (ImGui::GetIO().WantCaptureMouse) {
+                break;
+            }
             mouse.OnLeftPressed(pt.x, pt.y);
             break;
         case WM_LBUTTONUP:
+            if (ImGui::GetIO().WantCaptureMouse) {
+                break;
+            }
             mouse.OnLeftReleased(pt.x, pt.y);
             break;
         case WM_RBUTTONDOWN:
+            if (ImGui::GetIO().WantCaptureMouse) {
+                break;
+            }
             mouse.OnRightPressed(pt.x, pt.y);
             break;
         case WM_RBUTTONUP:
+            if (ImGui::GetIO().WantCaptureMouse) {
+                break;
+            }
             mouse.OnRightReleased(pt.x, pt.y);
             break;
         case WM_MOUSEWHEEL:
+            if (ImGui::GetIO().WantCaptureMouse) {
+                break;
+            }
             if (GET_WHEEL_DELTA_WPARAM(wParam) >= 0) {
                 mouse.OnWheelUp(pt.x, pt.y);
             } else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
@@ -170,10 +224,16 @@ LRESULT Panel::HandleMsg(HWND hWnd, const UINT msg, const WPARAM wParam, const L
             }
             break;
         case WM_MBUTTONDOWN:
-            // unimplemented yet
+            if (ImGui::GetIO().WantCaptureMouse) {
+                break;
+            }
+        // unimplemented yet
             break;
         case WM_MBUTTONUP:
-            // unimplemented yet
+            if (ImGui::GetIO().WantCaptureMouse) {
+                break;
+            }
+        // unimplemented yet
             break;
         /************ END MOUSE MESSAGES *************/
 
