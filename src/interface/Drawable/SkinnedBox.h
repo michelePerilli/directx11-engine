@@ -4,16 +4,23 @@
 #include "DrawableBase.h"
 #include <random>
 
-class ENGINE_DLL SkinnedBox : public DrawableBase<SkinnedBox>
-{
+class ENGINE_DLL SkinnedBox : public DrawableBase<SkinnedBox> {
 public:
-	SkinnedBox( Graphics& gfx,std::mt19937& rng,
-		std::uniform_real_distribution<float>& adist,
-		std::uniform_real_distribution<float>& ddist,
-		std::uniform_real_distribution<float>& odist,
-		std::uniform_real_distribution<float>& rdist );
-	void Update( float dt ) noexcept override;
-	DirectX::XMMATRIX GetTransformXM() const noexcept override;
+    SkinnedBox(Graphics &gfx, std::mt19937 &rng,
+               std::uniform_real_distribution<float> &adist,
+               std::uniform_real_distribution<float> &ddist,
+               std::uniform_real_distribution<float> &odist,
+               std::uniform_real_distribution<float> &rdist);
+
+    explicit SkinnedBox(Graphics &gfx);
+
+    void Update(float dt) noexcept override;
+
+    [[nodiscard]] DirectX::XMMATRIX GetTransformXM() const noexcept override;
+
+
+    void init(Graphics &gfx);
+
 private:
 	// positional
 	float r;

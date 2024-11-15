@@ -7,11 +7,13 @@
 #define RESOLUTION_X 1920.0f
 #define RESOLUTION_Y 1080.0f
 #define RESOLUTION_RATIO (RESOLUTION_Y / RESOLUTION_X)
+#define RENDERING_DISANCE 100.0f
+#define RENDERING_FOV 0.5f
 
 class ENGINE_DLL Graphics {
     friend class Bindable;
-    DirectX::XMMATRIX projection;
-    DirectX::XMMATRIX camera;
+    DirectX::XMMATRIX projection{};
+    DirectX::XMMATRIX camera{};
     bool imguiEnabled = true;
     Microsoft::WRL::ComPtr<ID3D11Device> pDevice;
     Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain;

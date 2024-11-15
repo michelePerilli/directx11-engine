@@ -21,6 +21,40 @@ SkinnedBox::SkinnedBox(Graphics &gfx,
       chi(adist(rng)),
       theta(adist(rng)),
       phi(adist(rng)) {
+    init(gfx);
+}
+
+SkinnedBox::SkinnedBox(Graphics &gfx)
+    : r(0),
+      droll(0),
+      dpitch(0),
+      dyaw(0),
+      dphi(0),
+      dtheta(0),
+      dchi(0),
+      chi(0),
+      theta(0),
+      phi(0) {
+    init(gfx);
+}
+
+void SkinnedBox::Update(const float dt) noexcept {
+    roll += droll * dt;
+    pitch += dpitch * dt;
+    yaw += dyaw * dt;
+    theta += dtheta * dt;
+    phi += dphi * dt;
+    chi += dchi * dt;
+}
+
+DirectX::XMMATRIX SkinnedBox::GetTransformXM() const noexcept {
+    namespace dx = DirectX;
+    return dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
+           dx::XMMatrixTranslation(r, 0.0f, 0.0f) *
+           dx::XMMatrixRotationRollPitchYaw(theta, phi, chi);
+}
+
+void SkinnedBox::init(Graphics &gfx) {
     namespace dx = DirectX;
 
     if (!IsStaticInitialized()) {
@@ -60,20 +94,4 @@ SkinnedBox::SkinnedBox(Graphics &gfx,
     }
 
     AddBind(std::make_unique<TransformCbuf>(gfx, *this));
-}
-
-void SkinnedBox::Update(const float dt) noexcept {
-    roll += droll * dt;
-    pitch += dpitch * dt;
-    yaw += dyaw * dt;
-    theta += dtheta * dt;
-    phi += dphi * dt;
-    chi += dchi * dt;
-}
-
-DirectX::XMMATRIX SkinnedBox::GetTransformXM() const noexcept {
-    namespace dx = DirectX;
-    return dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
-           dx::XMMatrixTranslation(r, 0.0f, 0.0f) *
-           dx::XMMatrixRotationRollPitchYaw(theta, phi, chi);
 }

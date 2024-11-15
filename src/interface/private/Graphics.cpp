@@ -28,21 +28,7 @@ Graphics::Graphics(HWND hWnd) {
 
     Logger::info("Creating DXGI Swap Chain...");
 
-    OFT_COM_EXCEPTION(
-        D3D11CreateDeviceAndSwapChain(
-            nullptr,
-            D3D_DRIVER_TYPE_HARDWARE,
-            nullptr,
-            0,
-            nullptr,
-            0,
-            D3D11_SDK_VERSION,
-            &sd,
-            &pSwapChain,
-            &pDevice,
-            nullptr,
-            &pDeviceContext
-        ));
+    OFT_COM_EXCEPTION(D3D11CreateDeviceAndSwapChain(nullptr,D3D_DRIVER_TYPE_HARDWARE,nullptr,0, nullptr,0, D3D11_SDK_VERSION, &sd,&pSwapChain, &pDevice, nullptr,&pDeviceContext));
 
     Microsoft::WRL::ComPtr<ID3D11Resource> pBackBuffer;
 
