@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../core/CoreMin.h"
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <wrl.h>
+#include "../core/CoreMacro.h"
 #define RESOLUTION_X 1920.0f
 #define RESOLUTION_Y 1080.0f
 #define RESOLUTION_RATIO (RESOLUTION_Y / RESOLUTION_X)

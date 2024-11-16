@@ -1,7 +1,8 @@
 #pragma once
-#include <libloaderapi.h>
+
 #include <string>
-#include <windows.h>
+#include "CoreMacro.h"
+#include "WinSDK.h"
 
 class ENGINE_DLL PerGameSettings {
 

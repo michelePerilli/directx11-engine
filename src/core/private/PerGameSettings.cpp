@@ -1,4 +1,5 @@
-#include "../../Engine.h"
+#include "../PerGameSettings.h"
+#include "../../component/Time.h"
 
 PerGameSettings* PerGameSettings::inst;
 

@@ -1,4 +1,5 @@
 #include "../Mouse.h"
+#include "../../core/WinSDK.h"
 
 Mouse::Event::Type Mouse::Event::GetType() const noexcept {
     return type;

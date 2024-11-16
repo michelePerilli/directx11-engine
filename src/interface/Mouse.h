@@ -1,6 +1,6 @@
 #pragma once
 #include <queue>
-#include "../core/Core.h"
+#include "../core/CoreMacro.h"
 
 class ENGINE_DLL Mouse {
     friend class Panel;

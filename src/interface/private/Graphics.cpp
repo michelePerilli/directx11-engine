@@ -4,9 +4,9 @@
 
 #include <DirectXMath.h>
 
-#include "../../common/Logger.h"
-#include "../../libs/imgui/imgui_impl_dx11.h"
-#include "../../libs/imgui/imgui_impl_win32.h"
+#include "../../component/Logger.h"
+#include "../../component/imgui/imgui_impl_dx11.h"
+#include "../../component/imgui/imgui_impl_win32.h"
 
 Graphics::Graphics(HWND hWnd) {
     DXGI_SWAP_CHAIN_DESC sd = {};
@@ -104,12 +104,6 @@ void Graphics::BeginFrame(float red, float green, float blue) noexcept {
     pDeviceContext->ClearRenderTargetView(pRenderTargetView.Get(), color);
     pDeviceContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
-
-// void Graphics::ClearBuffer(const float red, const float green, const float blue) const noexcept {
-//     const float color[] = {red, green, blue, 1.0f};
-//     pDeviceContext->ClearRenderTargetView(pRenderTargetView.Get(), color);
-//     pDeviceContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
-// }
 
 void Graphics::DrawIndexed(const UINT count) const noexcept {
     pDeviceContext->DrawIndexed(count, 0u, 0u);

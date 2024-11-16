@@ -1,7 +1,6 @@
 #pragma once
 #include "Exception.h"
-#include "../Engine.h"
-
+#include "../core/WinSDK.h"
 
 #define WINDOW_EXCEPTION( hr ) WindowException( __LINE__, __FILE__, hr )
 #define WINDOW_EXCEPTION_LASTERROR() WindowException( __LINE__, __FILE__, GetLastError() )

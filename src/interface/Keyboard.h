@@ -1,7 +1,7 @@
 #pragma once
 #include <queue>
 #include <bitset>
-#include "../core/Core.h"
+#include "../core/CoreMacro.h"
 
 class ENGINE_DLL Keyboard {
     friend class Panel;
