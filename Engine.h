@@ -1,6 +1,9 @@
 #pragma once
 
+#ifdef WIN_ENTRY
 #include "src/WinEntry.h"
+#endif
+
 #include "src/component/imgui/imgui_impl_dx11.h"
 #include "src/component/imgui/imgui_impl_win32.h"
 #include "src/component/gdiplus/GDIPlusManager.h"
