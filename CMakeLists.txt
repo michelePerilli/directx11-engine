@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.29)
 project(GameEngine)
 
+set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
 set(CMAKE_CXX_STANDARD 26)
 
 add_definitions(-DBUILD_DLL)
@@ -50,3 +51,6 @@ target_link_libraries(GameEngine d3d11)
 target_link_libraries(GameEngine d3dx11)
 target_link_libraries(GameEngine D3DCompiler.lib)
 target_link_libraries(GameEngine DirectXMath)
+
+include(FetchContent)
+include(CMakeLists-assimp.txt)
