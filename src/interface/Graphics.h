@@ -26,11 +26,13 @@ class ENGINE_DLL Graphics {
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
 
 public:
-    explicit Graphics(HWND hWnd);
+
+    Graphics(HWND hWnd, int width, int height);
 
     Graphics(const Graphics &) = delete;
 
     Graphics &operator=(const Graphics &) = delete;
+
 
     ~Graphics();
 

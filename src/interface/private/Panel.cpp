@@ -58,7 +58,7 @@ Panel::Panel(const char *name, const int width, const int height)
     }
 
     ImGui_ImplWin32_Init(hWnd);
-    pGfx = std::make_unique<Graphics>(hWnd);
+    pGfx = std::make_unique<Graphics>(hWnd, width, height);
 }
 
 Panel::~Panel() {

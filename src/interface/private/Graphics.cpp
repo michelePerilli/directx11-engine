@@ -8,10 +8,10 @@
 #include "../../component/imgui/imgui_impl_dx11.h"
 #include "../../component/imgui/imgui_impl_win32.h"
 
-Graphics::Graphics(HWND hWnd) {
+Graphics::Graphics(HWND hWnd, int width, int height) {
     DXGI_SWAP_CHAIN_DESC sd = {};
-    sd.BufferDesc.Width = 0;
-    sd.BufferDesc.Height = 0;
+    sd.BufferDesc.Width = width;
+    sd.BufferDesc.Height = height;
     sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     sd.BufferDesc.RefreshRate.Numerator = 0;
     sd.BufferDesc.RefreshRate.Denominator = 0;
@@ -46,8 +46,8 @@ Graphics::Graphics(HWND hWnd) {
 
     Microsoft::WRL::ComPtr<ID3D11Texture2D> pDepthStencil;
     D3D11_TEXTURE2D_DESC descDepth = {};
-    descDepth.Width = RESOLUTION_X;
-    descDepth.Height = RESOLUTION_Y;
+    descDepth.Width = width;
+    descDepth.Height = height;
     descDepth.MipLevels = 1;
     descDepth.ArraySize = 1;
     descDepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -67,8 +67,8 @@ Graphics::Graphics(HWND hWnd) {
 
     // configure viewport
     D3D11_VIEWPORT vp;
-    vp.Width = RESOLUTION_X;
-    vp.Height = RESOLUTION_Y;
+    vp.Width = width;
+    vp.Height = height;
     vp.MinDepth = 0.0f;
     vp.MaxDepth = 1.0f;
     vp.TopLeftX = 0.0f;
