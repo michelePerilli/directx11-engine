@@ -12,33 +12,33 @@ SolidSphere::SolidSphere(Graphics &gfx, float radius) {
         };
         auto model = Sphere::Make<Vertex>();
         model.Transform(dx::XMMatrixScaling(radius, radius, radius));
-        AddBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
-        AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
+        AddBind(std::make_unique<Bind::VertexBuffer>(gfx, model.vertices));
+        AddIndexBuffer(std::make_unique<Bind::IndexBuffer>(gfx, model.indices));
 
-        auto pvs = std::make_unique<VertexShader>(gfx, L"D:/Dev/C++/gaming/GameEngine/shader/_SolidVS.cso");
+        auto pvs = std::make_unique<Bind::VertexShader>(gfx, L"D:/Dev/C++/gaming/GameEngine/shader/_SolidVS.cso");
         auto pvsbc = pvs->GetBytecode();
         AddStaticBind(std::move(pvs));
 
-        AddStaticBind(std::make_unique<PixelShader>(gfx, L"D:/Dev/C++/gaming/GameEngine/shader/_SolidPS.cso"));
+        AddStaticBind(std::make_unique<Bind::PixelShader>(gfx, L"D:/Dev/C++/gaming/GameEngine/shader/_SolidPS.cso"));
 
         struct PSColorConstant {
             dx::XMFLOAT3 color = {1.0f, 1.0f, 1.0f};
             float padding{};
         } colorConst;
-        AddStaticBind(std::make_unique<PixelConstantBuffer<PSColorConstant> >(gfx, colorConst));
+        AddStaticBind(std::make_unique<Bind::PixelConstantBuffer<PSColorConstant> >(gfx, colorConst));
 
         const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
         {
             {"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
         };
-        AddStaticBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
+        AddStaticBind(std::make_unique<Bind::InputLayout>(gfx, ied, pvsbc));
 
-        AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+        AddStaticBind(std::make_unique<Bind::Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
     } else {
         SetIndexFromStatic();
     }
 
-    AddBind(std::make_unique<TransformCbuf>(gfx, *this));
+    AddBind(std::make_unique<Bind::TransformCbuf>(gfx, *this));
 }
 
 void SolidSphere::Update(float dt) noexcept {

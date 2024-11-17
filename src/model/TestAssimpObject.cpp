@@ -18,11 +18,11 @@ TestAssimpObject::TestAssimpObject(
     namespace dx = DirectX;
 
     if (!IsStaticInitialized()) {
-        using hw3dexp::VertexLayout;
-        hw3dexp::VertexBuffer vbuf(std::move(
+        using Vertexes::VertexLayout;
+        Vertexes::VertexBuffer vbuf(std::move(
             VertexLayout{}
-            .Append(hw3dexp::Position3D)
-            .Append(hw3dexp::Normal)
+            .Append(Vertexes::Position3D)
+            .Append(Vertexes::Normal)
         ));
 
         Assimp::Importer importer;
@@ -48,19 +48,19 @@ TestAssimpObject::TestAssimpObject(
             indices.push_back(face.mIndices[2]);
         }
 
-        AddStaticBind(std::make_unique<VertexBuffer>(gfx, vbuf));
+        AddStaticBind(std::make_unique<Bind::VertexBuffer>(gfx, vbuf));
 
-        AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices));
+        AddStaticIndexBuffer(std::make_unique<Bind::IndexBuffer>(gfx, indices));
 
-        auto pvs = std::make_unique<VertexShader>(gfx, L"D:/Dev/C++/gaming/GameEngine/shader/_PhongVS.cso");
+        auto pvs = std::make_unique<Bind::VertexShader>(gfx, L"D:/Dev/C++/gaming/GameEngine/shader/_PhongVS.cso");
         auto pvsbc = pvs->GetBytecode();
         AddStaticBind(std::move(pvs));
 
-        AddStaticBind(std::make_unique<PixelShader>(gfx, L"D:/Dev/C++/gaming/GameEngine/shader/_PhongPS.cso"));
+        AddStaticBind(std::make_unique<Bind::PixelShader>(gfx, L"D:/Dev/C++/gaming/GameEngine/shader/_PhongPS.cso"));
 
-        AddStaticBind(std::make_unique<InputLayout>(gfx, vbuf.GetLayout().GetD3DLayout(), pvsbc));
+        AddStaticBind(std::make_unique<Bind::InputLayout>(gfx, vbuf.GetLayout().GetD3DLayout(), pvsbc));
 
-        AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+        AddStaticBind(std::make_unique<Bind::Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
         struct PSMaterialConstant {
             DirectX::XMFLOAT3 color;
@@ -69,9 +69,9 @@ TestAssimpObject::TestAssimpObject(
             float padding[3];
         } pmc;
         pmc.color = material;
-        AddStaticBind(std::make_unique<PixelConstantBuffer<PSMaterialConstant> >(gfx, pmc, 1u));
+        AddStaticBind(std::make_unique<Bind::PixelConstantBuffer<PSMaterialConstant> >(gfx, pmc, 1u));
     } else {
         SetIndexFromStatic();
     }
-    AddBind(std::make_unique<TransformCbuf>(gfx, *this));
+    AddBind(std::make_unique<Bind::TransformCbuf>(gfx, *this));
 }

@@ -165,7 +165,7 @@ void Surface::Save(const std::string &filename) const {
     }
 }
 
-void Surface::Copy(const Surface &src) noexcept {
+void Surface::Copy(const Surface &src) const noexcept {
     assert(width == src.width);
     assert(height == src.height);
     memcpy(pBuffer.get(), src.pBuffer.get(), width * height * sizeof(Color));

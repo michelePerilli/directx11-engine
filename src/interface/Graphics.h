@@ -10,8 +10,12 @@
 #define RENDER_DISTANCE 100.0f
 #define RENDER_FOV 0.5f
 
+namespace Bind {
+    class Bindable;
+}
+
 class ENGINE_DLL Graphics {
-    friend class Bindable;
+    friend Bind::Bindable;
     DirectX::XMMATRIX projection{};
     DirectX::XMMATRIX camera{};
     bool imguiEnabled = true;

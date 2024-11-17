@@ -16,7 +16,7 @@ public:
 
     void Draw(Graphics &gfx) const noexcept;
 
-    virtual void Update(float dt) noexcept = 0;
+    virtual void Update(float dt) noexcept {}
 
     virtual ~Drawable() = default;
 
@@ -31,14 +31,14 @@ protected:
         return nullptr;
     }
 
-    void AddBind(std::unique_ptr<Bindable> bind) noexcept;
+    void AddBind(std::unique_ptr<Bind::Bindable> bind) noexcept;
 
-    void AddIndexBuffer(std::unique_ptr<IndexBuffer> ibuf) noexcept;
+    void AddIndexBuffer(std::unique_ptr<Bind::IndexBuffer> ibuf) noexcept;
 
 private:
-    [[nodiscard]] virtual const std::vector<std::unique_ptr<Bindable> > &GetStaticBinds() const noexcept = 0;
+    [[nodiscard]] virtual const std::vector<std::unique_ptr<Bind::Bindable> > &GetStaticBinds() const noexcept = 0;
 
 
-    const IndexBuffer *pIndexBuffer = nullptr;
-    std::vector<std::unique_ptr<Bindable> > binds;
+    const Bind::IndexBuffer *pIndexBuffer = nullptr;
+    std::vector<std::unique_ptr<Bind::Bindable> > binds;
 };
