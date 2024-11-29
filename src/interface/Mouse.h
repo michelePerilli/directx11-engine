@@ -1,4 +1,5 @@
 #pragma once
+#include <optional>
 #include <queue>
 #include "../core/CoreMacro.h"
 
@@ -6,6 +7,9 @@ class ENGINE_DLL Mouse {
     friend class Panel;
 
 public:
+    struct RawDelta {
+        int x, y;
+    };
 
     class Event {
     public:
@@ -18,8 +22,7 @@ public:
             WheelDown,
             Move,
             Enter,
-            Leave,
-            Invalid
+            Leave
         };
 
     private:
@@ -30,13 +33,6 @@ public:
         int y;
 
     public:
-        Event() noexcept
-            : type(Type::Invalid),
-              leftIsPressed(false),
-              rightIsPressed(false),
-              x(0),
-              y(0) {
-        }
 
         Event(const Type type, const Mouse &parent) noexcept
             : type(type),
@@ -59,8 +55,6 @@ public:
         [[nodiscard]] bool RightIsPressed() const noexcept;
     };
 
-    Event Read() noexcept;
-
     Mouse() = default;
 
     Mouse(const Mouse &) = delete;
@@ -68,6 +62,10 @@ public:
     Mouse &operator=(const Mouse &) = delete;
 
     [[nodiscard]] std::pair<int, int> GetPos() const noexcept;
+
+    std::optional<RawDelta> ReadRawDelta() noexcept;
+
+    std::optional<Mouse::Event> Read() noexcept;
 
     [[nodiscard]] int GetPosX() const noexcept;
 
@@ -83,10 +81,11 @@ public:
 
     void Flush() noexcept;
 
-
+    void EnableRaw() noexcept;
+    void DisableRaw() noexcept;
+    bool RawEnabled() const noexcept;
 
 private:
-
     static constexpr unsigned int bufferSize = 16u;
     int x = 0;
     int y = 0;
@@ -94,13 +93,17 @@ private:
     bool rightIsPressed = false;
     bool isInWindow = false;
     int wheelDeltaCarry = 0;
+    bool rawEnabled = false;
     std::queue<Event> buffer;
+    std::queue<RawDelta> rawBuffer;
 
     void OnMouseMove(int x, int y) noexcept;
 
     void OnMouseLeave() noexcept;
 
     void OnMouseEnter() noexcept;
+
+    void OnRawDelta(int dx, int dy) noexcept;
 
     void OnLeftPressed(int x, int y) noexcept;
 
@@ -116,8 +119,7 @@ private:
 
     void TrimBuffer() noexcept;
 
+    void TrimRawBuffer() noexcept;
+
     void OnWheelDelta(int x, int y, int delta) noexcept;
-
-
 };
-

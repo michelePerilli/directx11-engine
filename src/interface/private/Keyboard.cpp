@@ -1,10 +1,5 @@
 #include "../Keyboard.h"
 
-Keyboard::Event::Event() noexcept: type(Type::Invalid), code(0u) {
-}
-
-Keyboard::Event::Event(const Type type, const unsigned char code) noexcept: type(type), code(code) {
-}
 
 bool Keyboard::Event::IsPress() const noexcept {
     return type == Type::Press;
@@ -12,10 +7,6 @@ bool Keyboard::Event::IsPress() const noexcept {
 
 bool Keyboard::Event::IsRelease() const noexcept {
     return type == Type::Release;
-}
-
-bool Keyboard::Event::IsValid() const noexcept {
-    return type != Type::Invalid;
 }
 
 unsigned char Keyboard::Event::GetCode() const noexcept {
@@ -26,7 +17,7 @@ bool Keyboard::KeyIsPressed(const unsigned char keycode) const noexcept {
     return keyStates[keycode];
 }
 
-Keyboard::Event Keyboard::ReadKey() noexcept {
+std::optional<Keyboard::Event> Keyboard::ReadKey() noexcept {
     if (!keyBuffer.empty()) {
         const Event e = keyBuffer.front();
         keyBuffer.pop();
@@ -43,7 +34,7 @@ void Keyboard::FlushKey() noexcept {
     keyBuffer = std::queue<Event>();
 }
 
-char Keyboard::ReadChar() noexcept {
+std::optional<char> Keyboard::ReadChar() noexcept {
     if (!charBuffer.empty()) {
         const char charCode = charBuffer.front();
         charBuffer.pop();

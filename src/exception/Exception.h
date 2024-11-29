@@ -2,7 +2,7 @@
 #include <sstream>
 #include <string>
 
-#define THROW_WINDOW_EXCEPTION( msg ) Panel::Exception( __LINE__, __FILE__, msg )
+#define THROW_WINDOW_EXCEPTION( msg ) Exception( __LINE__, __FILE__, msg )
 
 class Exception : public std::exception {
     int line;

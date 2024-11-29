@@ -35,12 +35,16 @@ class ENGINE_DLL Panel {
     static LRESULT CALLBACK HandleMsgSetup( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noexcept;
     static LRESULT CALLBACK HandleMsgThunk( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noexcept;
     LRESULT HandleMsg( HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam ) noexcept;
-
-
+    void HideCursor();
+    void ShowCursor();
+    void EnableImGuiCursor();
+    void DisableImGuiCursor();
     HWND hWnd;
     std::unique_ptr<Graphics> pGfx;
     int width;
     int height;
+    bool cursorEnabled = true;
+    std::vector<char> rawBuffer;
 public:
     Keyboard keyboard;
     Mouse mouse;
@@ -50,6 +54,13 @@ public:
     void SetTitle(const std::string &title) const;
     void Open() const;
     void Close() const;
+
+    void EnableCursor();
+    void DisableCursor();
+    bool CursorEnabled();
+
+    void ConfineCursor();
+    void FreeCursor();
 
     [[nodiscard]] std::optional<int> ProcessWindowMessages() const;
     Graphics &Gfx();

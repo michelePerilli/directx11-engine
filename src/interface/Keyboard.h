@@ -1,6 +1,8 @@
 #pragma once
 #include <queue>
 #include <bitset>
+#include <optional>
+
 #include "../core/CoreMacro.h"
 
 class ENGINE_DLL Keyboard {
@@ -9,12 +11,11 @@ class ENGINE_DLL Keyboard {
 public:
     std::string text = "kbd";
 
-    class Event {
+    class ENGINE_DLL Event {
     public:
         enum class Type {
             Press,
-            Release,
-            Invalid
+            Release
         };
 
     private:
@@ -22,15 +23,12 @@ public:
         unsigned char code;
 
     public:
-        Event() noexcept;
-
-        Event(Type type, unsigned char code) noexcept;
+        Event(const Type type, const unsigned char code) noexcept : type(type), code(code) {
+        };
 
         [[nodiscard]] bool IsPress() const noexcept;
 
         [[nodiscard]] bool IsRelease() const noexcept;
-
-        [[nodiscard]] bool IsValid() const noexcept;
 
         [[nodiscard]] unsigned char GetCode() const noexcept;
     };
@@ -44,14 +42,14 @@ public:
     // key event stuff
     bool KeyIsPressed(unsigned char keycode) const noexcept;
 
-    Event ReadKey() noexcept;
+    std::optional<Event> ReadKey() noexcept;
 
     bool KeyIsEmpty() const noexcept;
 
     void FlushKey() noexcept;
 
     // char event stuff
-    char ReadChar() noexcept;
+    std::optional<char> ReadChar() noexcept;
 
     bool CharIsEmpty() const noexcept;
 
@@ -87,5 +85,3 @@ private:
     std::queue<Event> keyBuffer;
     std::queue<char> charBuffer;
 };
-
-
