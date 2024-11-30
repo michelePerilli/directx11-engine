@@ -21,12 +21,12 @@ private:
 
 class ENGINE_DLL Node {
     friend class Model;
-    friend class ModelWindow;
 public:
-    Node(const std::string& name, std::vector<Mesh *> meshPtrs, const DirectX::XMMATRIX &transform) noexcept;
+    Node(int id, const std::string& name, std::vector<Mesh *> meshPtrs, const DirectX::XMMATRIX &transform) noexcept;
 
     void Draw(Graphics &gfx, DirectX::FXMMATRIX accumulatedTransform) const noexcept;
-    void ShowTree(int& nodeIndex,std::optional<int>& selectedIndex,Node*& pSelectedNode) const noexcept;
+    void ShowTree(Node*& pSelectedNode) const noexcept;
+    int GetID() const noexcept;
 private:
     void AddChild(std::unique_ptr<Node> pChild) noexcept;
 
@@ -34,6 +34,7 @@ private:
 
 private:
     std::string name;
+    int id;
     std::vector<std::unique_ptr<Node> > childPtrs;
     std::vector<Mesh *> meshPtrs;
     DirectX::XMFLOAT4X4 transform;
@@ -54,7 +55,7 @@ public:
 private:
     static std::unique_ptr<Mesh> ParseMesh(Graphics &gfx, const aiMesh &mesh);
 
-    std::unique_ptr<Node> ParseNode(const aiNode &node);
+    std::unique_ptr<Node> ParseNode(int&nextId, const aiNode &node);
 
 private:
     std::unique_ptr<Node> pRoot;

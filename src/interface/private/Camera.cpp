@@ -1,32 +1,39 @@
 #include "../Camera.h"
+#include <DirectXMath.h>
+#include <memory>
+
 #include "../../component/imgui/imgui.h"
+#include "../../model/ChiliMath.h"
 
 namespace dx = DirectX;
 
+Camera::Camera() {
+    Reset();
+}
+
 DirectX::XMMATRIX Camera::GetMatrix() const noexcept {
-    const auto pos = dx::XMVector3Transform(
-        dx::XMVectorSet(0, 0, -r, x),
-        dx::XMMatrixRotationRollPitchYaw(phi, -theta, 0.0f)
+    using namespace DirectX;
+    const XMVECTOR forwardBaseVector = XMVectorSet( 0.0f,0.0f,1.0f,0.0f );
+    // apply the camera rotations to a base vector
+    const auto lookVector = XMVector3Transform( forwardBaseVector,
+        XMMatrixRotationRollPitchYaw( pitch,yaw,0.0f )
     );
-    return dx::XMMatrixLookAtLH(
-               pos, dx::XMVectorZero(),
-               dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
-           ) * dx::XMMatrixRotationRollPitchYaw(
-               pitch, -yaw, roll
-           );
+    // generate camera transform (applied to all objects to arrange them relative
+    // to camera position/orientation in world) from cam position and direction
+    // camera "top" always faces towards +Y (cannot do a barrel roll)
+    const auto camPosition = XMLoadFloat3( &pos );
+    const auto camTarget = camPosition + lookVector;
+    return XMMatrixLookAtLH( camPosition,camTarget,XMVectorSet( 0.0f,1.0f,0.0f,0.0f ) );
 }
 
 void Camera::SpawnControlWindow() noexcept {
     if (ImGui::Begin("Camera")) {
         ImGui::Text("Position");
-        ImGui::SliderFloat("X", &x, 0.1f, 80.0f, "%.1f");
-        ImGui::SliderFloat("Y", &y, 0.1f, 80.0f, "%.1f");
-        ImGui::SliderFloat("Z", &r, 0.1f, 80.0f, "%.1f");
-        ImGui::SliderAngle("Theta", &theta, -180.0f, 180.0f);
-        ImGui::SliderAngle("Phi", &phi, -89.0f, 89.0f);
+        ImGui::SliderFloat("X", &pos.x, -80.f, 80.0f, "%.1f");
+        ImGui::SliderFloat("Y", &pos.y, -80.f, 80.0f, "%.1f");
+        ImGui::SliderFloat("Z", &pos.z, -80.f, 80.0f, "%.1f");
         ImGui::Text("Orientation");
-        ImGui::SliderAngle("Roll", &roll, -180.0f, 180.0f);
-        ImGui::SliderAngle("Pitch", &pitch, -180.0f, 180.0f);
+        ImGui::SliderAngle("Pitch", &pitch, 0.995f * -90.0f, 0.995f * 90.0f);
         ImGui::SliderAngle("Yaw", &yaw, -180.0f, 180.0f);
         if (ImGui::Button("Reset")) {
             Reset();
@@ -36,22 +43,24 @@ void Camera::SpawnControlWindow() noexcept {
 }
 
 void Camera::Reset() noexcept {
-    x = 1.0f;
-    y = 1.0f;
-    r = 20.0f;
-    theta = 0.0f;
-    phi = 0.0f;
+    pos = {0.0f, 7.5f, -18.0f};
     pitch = 0.0f;
     yaw = 0.0f;
-    roll = 0.0f;
 }
 
-void Camera::LookHorizontally(const float delta) noexcept {
-    yaw += delta;
+void Camera::Rotate(float dx, float dy) {
+    yaw = wrap_angle(yaw + dx * rotationSpeed);
+    pitch = std::clamp(pitch + dy * rotationSpeed, 0.995f * -PI / 2.0f, 0.995f * PI / 2.0f);
 }
 
-void Camera::LookVertically(const float delta) noexcept {
-    pitch += delta;
+void Camera::Translate(DirectX::XMFLOAT3 translation) {
+    DirectX::XMStoreFloat3( &translation, DirectX::XMVector3Transform(
+    DirectX::XMLoadFloat3(&translation),
+    DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, 0)
+    * DirectX::XMMatrixScaling(travelSpeed, travelSpeed, travelSpeed)
+    ) );
+    pos.x += translation.x;
+    pos.y += translation.y;
+    pos.z += translation.z;
 }
-
 

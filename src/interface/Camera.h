@@ -4,19 +4,17 @@
 class ENGINE_DLL Camera
 {
 public:
+	Camera();
 	DirectX::XMMATRIX GetMatrix() const noexcept;
 	void SpawnControlWindow() noexcept;
 	void Reset() noexcept;
-	void LookHorizontally(float delta) noexcept;
-	void LookVertically(float delta) noexcept;
+	void Rotate( float dx, float dy);
+	void Translate( DirectX::XMFLOAT3 translation);
 
 
-	float x = 20.0f;
-	float y = 20.0f;
-	float r = 20.0f;
-	float theta = 0.0f;
-	float phi = 0.0f;
-	float pitch = 0.0f;
-	float yaw = 0.0f;
-	float roll = 0.0f;
+	DirectX::XMFLOAT3 pos;
+	float pitch;
+	float yaw;
+	static constexpr float travelSpeed = 12.0f;
+	static constexpr float rotationSpeed = 0.004f;
 };
