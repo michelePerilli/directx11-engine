@@ -2,6 +2,7 @@
 #include "interface/IApplication.h"
 #include "component/Logger.h"
 #include "component/Time.h"
+#include "component/gdiplus/GDIPlusManager.h"
 #include "core/PerGameSettings.h"
 
 extern Win32::IApplication *EntryApplication();
@@ -9,6 +10,7 @@ extern Win32::IApplication *EntryApplication();
 
 int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     try {
+
         Logger logger;
         PerGameSettings gameSettings;
         Logger::info("Engine initialization...");

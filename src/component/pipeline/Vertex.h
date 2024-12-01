@@ -4,17 +4,11 @@
 #include <dxgiformat.h>
 #include <vector>
 #include <type_traits>
+#include "../../model/Color.h"
 #include "../../core/CoreMacro.h"
 // TODO da fare refactor su nomi e struttura
 
 namespace Vertexes {
-    struct BGRAColors {
-        unsigned char a;
-        unsigned char r;
-        unsigned char g;
-        unsigned char b;
-    };
-
     enum ElementType {
         Position2D,
         Position3D,
@@ -73,7 +67,7 @@ namespace Vertexes {
 
     template<>
     struct Map<BGRAColor> {
-        using SysType = BGRAColors;
+        using SysType = Colors::RGBA;
         static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
         static constexpr const char *semantic = "Color";
     };
@@ -124,7 +118,7 @@ namespace Vertexes {
     };
 
     template<ElementType Type>
-    const VertexLayout::Element & VertexLayout::Resolve() const noexcept {
+    const VertexLayout::Element &VertexLayout::Resolve() const noexcept {
         for (auto &e: elements) {
             if (e.GetType() == Type) {
                 return e;
@@ -190,7 +184,7 @@ namespace Vertexes {
     };
 
     template<ElementType Type>
-    auto & Vertex::Attr() noexcept {
+    auto &Vertex::Attr() noexcept {
         auto pAttribute = pData + layout.Resolve<Type>().GetOffset();
         return *reinterpret_cast<typename Map<Type>::SysType *>(pAttribute);
     }
@@ -226,8 +220,8 @@ namespace Vertexes {
         }
     }
 
-    template<typename First, typename ... Rest>
-    void Vertex::SetAttributeByIndex(size_t i, First &&first, Rest &&...rest) noexcept {
+    template<typename First, typename... Rest>
+    void Vertex::SetAttributeByIndex(size_t i, First &&first, Rest &&... rest) noexcept {
         SetAttributeByIndex(i, std::forward<First>(first));
         SetAttributeByIndex(i + 1, std::forward<Rest>(rest)...);
     }
@@ -254,7 +248,7 @@ namespace Vertexes {
     };
 
     template<ElementType Type>
-    const auto & ConstVertex::Attr() const noexcept {
+    const auto &ConstVertex::Attr() const noexcept {
         return const_cast<Vertex &>(vertex).Attr<Type>();
     }
 
@@ -290,8 +284,8 @@ namespace Vertexes {
         VertexLayout layout;
     };
 
-    template<typename ... Params>
-    void VertexBuffer::EmplaceBack(Params &&...params) noexcept {
+    template<typename... Params>
+    void VertexBuffer::EmplaceBack(Params &&... params) noexcept {
         assert(
             sizeof...(params) == layout.GetElementCount() && "Param count doesn't match number of vertex elements");
         buffer.resize(buffer.size() + layout.Size());

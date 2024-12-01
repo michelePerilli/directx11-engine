@@ -6,8 +6,8 @@ set(CMAKE_CXX_STANDARD 26)
 
 add_definitions(-DBUILD_DLL)
 
-file(GLOB_RECURSE vertex_files shader/*VS.hlsl)
-file(GLOB_RECURSE pixel_files shader/*PS.hlsl)
+file(GLOB_RECURSE vertex_files shader/*VS*.hlsl)
+file(GLOB_RECURSE pixel_files shader/*PS*.hlsl)
 
 # Build HLSL shaders
 add_custom_target(shader)

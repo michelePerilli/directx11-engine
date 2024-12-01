@@ -9,3 +9,4 @@
 #include "VertexBuffer.h"
 #include "VertexShader.h"
 #include "Vertex.h"
+#include "../../model/Sampler.h"

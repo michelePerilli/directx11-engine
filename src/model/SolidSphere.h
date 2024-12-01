@@ -1,11 +1,9 @@
 #pragma once
-#include "../component/pipeline/DrawableBase.h"
+#include "../component/pipeline/Drawable.h"
 
-class ENGINE_DLL SolidSphere : public DrawableBase<SolidSphere> {
+class ENGINE_DLL SolidSphere : public Drawable {
 public:
     SolidSphere(Graphics &gfx, float radius);
-
-    void Update(float dt) noexcept override;
 
     void SetPos(DirectX::XMFLOAT3 pos) noexcept;
 

@@ -1,15 +1,10 @@
 #pragma once
-#include "../component/pipeline/DrawableBase.h"
 #include "../component/pipeline/BindableBase.h"
-#include "../component/pipeline/Vertex.h"
-#include <assimp/Importer.hpp>
 #include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include <optional>
 
-class ENGINE_DLL Mesh : public DrawableBase<Mesh> {
+class ENGINE_DLL Mesh : public Drawable {
 public:
-    Mesh(Graphics &gfx, std::vector<std::unique_ptr<Bind::Bindable> > bindPtrs);
+    Mesh(Graphics &gfx, std::vector<std::shared_ptr<Bind::Bindable> > bindPtrs);
 
     void Draw(Graphics &gfx, DirectX::FXMMATRIX accumulatedTransform) const noexcept;
 
@@ -25,12 +20,15 @@ public:
     Node(int id, const std::string& name, std::vector<Mesh *> meshPtrs, const DirectX::XMMATRIX &transform) noexcept;
 
     void Draw(Graphics &gfx, DirectX::FXMMATRIX accumulatedTransform) const noexcept;
-    void ShowTree(Node*& pSelectedNode) const noexcept;
-    int GetID() const noexcept;
-private:
-    void AddChild(std::unique_ptr<Node> pChild) noexcept;
 
     void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
+
+    int GetID() const noexcept;
+
+    void ShowTree(Node*& pSelectedNode) const noexcept;
+
+private:
+    void AddChild(std::unique_ptr<Node> pChild) noexcept;
 
 private:
     std::string name;
@@ -53,9 +51,9 @@ public:
     void Draw(Graphics &gfx) const;
     void ShowWindow(const char* windowName = nullptr) const noexcept;
 private:
-    static std::unique_ptr<Mesh> ParseMesh(Graphics &gfx, const aiMesh &mesh);
+    static std::unique_ptr<Mesh> ParseMesh(Graphics &gfx, const aiMesh &mesh, const aiMaterial* const* pMaterials);
 
-    std::unique_ptr<Node> ParseNode(int&nextId, const aiNode &node);
+    std::unique_ptr<Node> ParseNode(int& nextId, const aiNode &node);
 
 private:
     std::unique_ptr<Node> pRoot;

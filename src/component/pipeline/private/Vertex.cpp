@@ -1,7 +1,7 @@
 #include "../Vertex.h"
 
 Vertexes::VertexLayout::Element::Element(ElementType type, size_t offset) noexcept: type(type),
-                                                                          offset(offset)  {
+    offset(offset) {
 }
 
 size_t Vertexes::VertexLayout::Element::GetOffsetAfter() const noexcept {
@@ -41,11 +41,11 @@ D3D11_INPUT_ELEMENT_DESC Vertexes::VertexLayout::Element::GetDesc() const noexce
     return {"INVALID", 0, DXGI_FORMAT_UNKNOWN, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0};
 }
 
-const Vertexes::VertexLayout::Element & Vertexes::VertexLayout::ResolveByIndex(size_t i) const noexcept {
+const Vertexes::VertexLayout::Element &Vertexes::VertexLayout::ResolveByIndex(size_t i) const noexcept {
     return elements[i];
 }
 
-Vertexes::VertexLayout & Vertexes::VertexLayout::Append(ElementType type) noexcept {
+Vertexes::VertexLayout &Vertexes::VertexLayout::Append(ElementType type) noexcept {
     elements.emplace_back(type, Size());
     return *this;
 }
@@ -68,7 +68,7 @@ std::vector<D3D11_INPUT_ELEMENT_DESC> Vertexes::VertexLayout::GetD3DLayout() con
 }
 
 Vertexes::Vertex::Vertex(char *pData, const VertexLayout &layout) noexcept: pData(pData),
-                                                                           layout(layout) {
+                                                                            layout(layout) {
     assert(pData != nullptr);
 }
 
@@ -78,11 +78,11 @@ Vertexes::ConstVertex::ConstVertex(const Vertex &v) noexcept: vertex(v) {
 Vertexes::VertexBuffer::VertexBuffer(VertexLayout layout) noexcept: layout(std::move(layout)) {
 }
 
-const char * Vertexes::VertexBuffer::GetData() const noexcept {
+const char *Vertexes::VertexBuffer::GetData() const noexcept {
     return buffer.data();
 }
 
-const Vertexes::VertexLayout & Vertexes::VertexBuffer::GetLayout() const noexcept {
+const Vertexes::VertexLayout &Vertexes::VertexBuffer::GetLayout() const noexcept {
     return layout;
 }
 

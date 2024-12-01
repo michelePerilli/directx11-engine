@@ -108,7 +108,7 @@ Surface Surface::FromFile(const std::string &name) {
         }
     }
 
-    return Surface(width, height, std::move(pBuffer));
+    return {width, height, std::move(pBuffer)};
 }
 
 void Surface::Save(const std::string &filename) const {
